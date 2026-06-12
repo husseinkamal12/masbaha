@@ -3,31 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Al-Noor Hub | صدقة جارية وأوقات الصلاة</title>
+    <title>السبحة الإلكترونية ومواقيت الصلاة</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts (Cairo & Plus Jakarta Sans) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
+
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        emerald: {
-                            50: '#f0fdf4',
-                            800: '#064e3b',
-                            900: '#022c22',
-                            950: '#011c15',
-                        },
-                        amber: {
-                            400: '#fbbf24',
-                        }
+                        darkGreen: '#011c15',
+                        cardGreen: 'rgba(4, 120, 87, 0.15)',
+                        goldAccent: '#fbbf24'
                     },
                     fontFamily: {
-                        sans: ['Plus Jakarta Sans', 'sans-serif'],
-                        arabic: ['Cairo', 'sans-serif'],
+                        cairo: ['Cairo', 'sans-serif'],
+                        sans: ['Plus Jakarta Sans', 'sans-serif']
                     }
                 }
             }
@@ -36,462 +33,261 @@
 
     <style>
         body {
-            font-family: 'Cairo', 'Plus Jakarta Sans', sans-serif;
-            background-color: #011c15 !important; /* لون الخلفية الخارجي الموحد لجميع الشاشات */
+            font-family: 'Cairo', sans-serif;
+            background-color: #011c15;
+            -webkit-tap-highlight-color: transparent;
         }
-        /* Custom scrollbar to keep it sleek */
-        ::-webkit-scrollbar {
-            width: 4px;
+        .tap-active:active {
+            transform: scale(0.97);
+            box-shadow: 0 0 20px rgba(251, 191, 36, 0.3);
         }
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #047857;
-            border-radius: 10px;
-        }
-        /* Glow Effect for Counter Button */
-        .glow-btn:active {
-            transform: scale(0.96);
-            box-shadow: 0 0 25px rgba(212, 175, 55, 0.5);
-        }
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-        .no-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-        /* smooth transitions */
-        .page-transition {
-            transition: all 0.3s ease-in-out;
-        }
-        /* Counter tap animation */
-        @keyframes countPop {
-            0%   { transform: scale(1); }
-            30%  { transform: scale(0.93); }
-            60%  { transform: scale(1.06); }
-            100% { transform: scale(1); }
-        }
-        .count-pop { animation: countPop 0.25s ease; }
-        /* Glow pulse on tap */
-        @keyframes glowPulse {
-            0%   { box-shadow: 0 0 40px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.04); }
-            50%  { box-shadow: 0 0 60px rgba(212,175,55,0.25), 0 0 20px rgba(52,211,153,0.15), inset 0 1px 0 rgba(255,255,255,0.04); }
-            100% { box-shadow: 0 0 40px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.04); }
-        }
-        .glow-pulse { animation: glowPulse 0.4s ease; }
     </style>
 </head>
-<body class="bg-emerald-950 text-slate-100 antialiased font-arabic selection:bg-emerald-500/30 select-none overflow-x-hidden min-h-screen flex justify-center items-start">
+<body class="text-slate-100 antialiased min-h-screen flex justify-center items-start overflow-x-hidden">
 
-    <div id="app-frame" class="relative w-full md:max-w-md min-h-screen bg-emerald-950 flex flex-col justify-between mx-auto shadow-2xl border-x border-emerald-900/20" dir="rtl">
+    <!-- الحاوية الرئيسية المتجاوبة (كامل الشاشة للموبايل وملمومة للكمبيوتر) -->
+    <div class="w-full md:max-w-md min-h-screen bg-darkGreen flex flex-col justify-between mx-auto shadow-2xl border-x border-emerald-950 px-5 py-6">
         
-        <div id="main-content" class="flex-1 px-5 py-4 space-y-5">
-            <div class="flex justify-between items-center pt-2">
-                <div class="flex items-center gap-2.5">
-                    <span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wider">صدقة جارية</span>
-                    <p class="text-xs text-emerald-100/70 font-medium">عن روح المغفور له بإذن الله <span class="text-amber-400 font-bold">جدي</span> 🤍</p>
+        <!-- القسم العلوي: الهيدر ومواقيت الصلاة -->
+        <div class="space-y-5 flex-1">
+            
+            <!-- الهيدر -->
+            <div class="flex justify-between items-center">
+                <div class="flex items-center gap-2">
+                    <span class="bg-amber-400/10 text-goldAccent border border-amber-400/20 text-[11px] font-bold px-2 py-0.5 rounded-md">السبحة المحدثة</span>
+                    <h1 class="text-sm font-bold text-slate-300">الذكر الحكيم</h1>
                 </div>
-                <button onclick="toggleLanguage()" class="text-xs font-semibold bg-emerald-900/40 hover:bg-emerald-900/60 border border-emerald-800/60 px-3 py-1.5 rounded-xl text-emerald-300 transition-all flex items-center gap-1.5 font-sans">
-                    <span>English</span>
-                    <i class="fa-solid fa-globe text-[10px] opacity-70"></i>
-                </button>
+                <div class="text-xs text-emerald-400/80 font-sans" id="live-clock">00:00:00</div>
             </div>
 
-            <div class="bg-gradient-to-br from-emerald-900/60 to-emerald-950/40 border border-emerald-800/40 rounded-3xl p-5 relative overflow-hidden shadow-inner">
-                <div class="absolute -right-10 -top-10 w-32 h-32 bg-emerald-500/5 rounded-full blur-2xl"></div>
-                <div class="relative z-10 text-center space-y-1">
-                    <h1 class="text-xl font-black text-white tracking-wide" id="txt-title">تقبل الله طاعتكم ✨</h1>
-                    <p class="text-xs text-emerald-200/50 max-w-[240px] mx-auto leading-relaxed" id="txt-subtitle">أهلاً بك في رحلتك الروحانية اليومية للتسبيح ومتابعة الصلاة.</p>
-                </div>
-
-                <div class="grid grid-cols-2 gap-3 mt-5">
-                    <div class="bg-emerald-950/60 border border-emerald-900/50 rounded-2xl p-3.5 text-center transition-all hover:border-emerald-800/60">
-                        <span class="text-[10px] font-bold text-emerald-400/70 block uppercase tracking-wider mb-1" id="lbl-today-count">تسبيحات اليوم</span>
-                        <span id="today-count-display" class="text-2xl font-black text-white font-sans tracking-tight">0</span>
-                    </div>
-                    <div class="bg-emerald-950/60 border border-emerald-900/50 rounded-2xl p-3.5 text-center transition-all hover:border-emerald-800/60">
-                        <span class="text-[10px] font-bold text-emerald-400/70 block uppercase tracking-wider mb-1" id="lbl-total-count">الإجمالي العام</span>
-                        <span id="total-count-display" class="text-2xl font-black text-amber-400 font-sans tracking-tight">0</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-emerald-900/30 border border-emerald-800/30 rounded-2xl p-4 flex justify-between items-center transition-all hover:bg-emerald-900/40">
-                <div class="flex items-center gap-3.5">
-                    <div class="w-10 h-10 rounded-xl bg-amber-400/10 flex items-center justify-center text-amber-400 border border-amber-400/20 shadow-sm" id="prayer-icon-container">
-                        <i class="fa-solid fa-cloud-sun text-lg" id="prayer-icon"></i>
+            <!-- كرت الصلاة القادمة الدقيق -->
+            <div class="bg-gradient-to-br from-emerald-950 to-transparent border border-emerald-900/40 rounded-2xl p-4 flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-amber-400/10 flex items-center justify-center text-goldAccent border border-amber-400/20">
+                        <i class="fa-solid fa-clock text-lg" id="prayer-icon"></i>
                     </div>
                     <div>
-                        <span class="text-[10px] font-bold text-amber-400 block tracking-wider uppercase" id="lbl-next-prayer">الأذان القادم</span>
-                        <span id="next-prayer-name" class="text-sm font-extrabold text-white">صلاة الظهر</span>
+                        <span class="text-[10px] font-bold text-amber-400 block tracking-wider uppercase">الأذان القادم</span>
+                        <span id="prayer-name" class="text-sm font-black text-white">جاري الحساب..</span>
                     </div>
                 </div>
                 <div class="text-left" dir="ltr">
-                    <span id="next-prayer-time" class="text-lg font-black text-white font-sans tracking-tight">12:19</span>
-                    <span id="prayer-countdown" class="text-[10px] text-emerald-400/70 block font-medium mt-0.5">متبقي 03:48:30</span>
+                    <span id="prayer-time" class="text-lg font-black text-white font-sans">00:00</span>
+                    <span id="prayer-countdown" class="text-[10px] text-emerald-400/70 block mt-0.5">متبقي --:--</span>
                 </div>
             </div>
 
-            <div class="bg-emerald-950/80 p-1 rounded-xl border border-emerald-900/50 grid grid-cols-2 gap-1">
-                <button onclick="switchTab('dhikr')" id="tab-dhikr" class="py-2 px-3 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2 bg-emerald-900 text-white shadow-sm">
-                    <i class="fa-solid fa-beads text-[11px]"></i>
-                    <span id="btn-tab-dhikr">الأذكار والتسبيح</span>
-                </button>
-                <button onclick="switchTab('goals')" id="tab-goals" class="py-2 px-3 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2 text-emerald-400/60 hover:text-emerald-300">
-                    <i class="fa-solid fa-bullseye text-[11px]"></i>
-                    <span id="btn-tab-goals">أهداف الختمة</span>
-                </button>
+            <!-- كرت الدعاء العشوائي المتغير -->
+            <div class="bg-cardGreen border border-emerald-900/30 rounded-2xl p-4 relative overflow-hidden space-y-2">
+                <div class="flex justify-between items-center border-b border-emerald-900/30 pb-2">
+                    <span class="text-xs font-bold text-goldAccent"><i class="fa-solid fa-heart-pulse ml-1"></i> دعاء مستحب</span>
+                    <button onclick="changeRandomDua()" class="text-emerald-400 hover:text-amber-400 transition-colors text-xs flex items-center gap-1 active:scale-90">
+                        <i class="fa-solid fa-arrows-rotate"></i> تدوير
+                    </button>
+                </div>
+                <p id="random-dua-text" class="text-sm font-medium text-slate-200 leading-relaxed min-h-[48px] flex items-center">
+                    جاري تحميل الأدعية...
+                </p>
             </div>
 
-            <div id="tab-content" class="space-y-4 min-h-[180px]">
+            <!-- قائمة أذكار السبحة المتاحة -->
+            <div class="space-y-2">
+                <span class="text-xs font-bold text-emerald-400/70 block px-1">اختر ذكر العداد:</span>
+                <div class="grid grid-cols-2 gap-2" id="dhikr-grid">
+                    <!-- سيتم ملؤه عبر الـ JavaScript -->
                 </div>
+            </div>
+
         </div>
 
-        <div class="p-5 bg-gradient-to-t from-emerald-950 via-emerald-950 to-transparent pt-10 sticky bottom-0 z-40 space-y-4">
+        <!-- القسم السفلي: لوحة التحكم وزر التسبيح الكبير -->
+        <div class="space-y-4 pt-6 bg-darkGreen sticky bottom-0 z-10">
             
-            <div class="flex justify-between items-center gap-3">
-                <button onclick="resetCurrentDhikr()" class="flex-1 bg-emerald-900/30 hover:bg-emerald-900/50 border border-emerald-800/40 text-emerald-400 py-3 px-4 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 active:scale-95">
-                    <i class="fa-solid fa-rotate-right text-[11px]"></i>
-                    <span id="btn-reset-current">تصفير العداد</span>
+            <!-- أزرار التحكم الصغيرة -->
+            <div class="flex gap-2">
+                <button onclick="resetCounter()" class="flex-1 bg-emerald-950/50 hover:bg-emerald-900/40 border border-emerald-900/50 text-emerald-400 py-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 active:scale-95">
+                    <i class="fa-solid fa-arrow-rotate-left"></i>
+                    <span>تصفير العداد الحالي</span>
                 </button>
-                <button onclick="vibrateDevice(50)" class="w-12 h-11 bg-emerald-900/30 border border-emerald-800/40 text-emerald-400 rounded-xl transition-all flex items-center justify-center active:scale-95 hover:bg-emerald-900/50">
-                    <i class="fa-solid fa-vibration text-sm"></i>
-                </button>
-                <button onclick="toggleSound()" id="btn-sound" class="w-12 h-11 bg-emerald-900/30 border border-emerald-800/40 text-emerald-400 rounded-xl transition-all flex items-center justify-center active:scale-95 hover:bg-emerald-900/50">
-                    <i class="fa-solid fa-volume-high text-sm"></i>
-                </button>
+                <div class="bg-emerald-950/50 border border-emerald-900/50 rounded-xl px-4 flex items-center justify-center gap-1">
+                    <span class="text-[10px] text-emerald-400/60 font-medium">مجموع اليوم:</span>
+                    <span id="total-today" class="text-xs font-black text-goldAccent font-sans">0</span>
+                </div>
             </div>
 
-            <button id="tap-zone" class="w-full bg-gradient-to-r from-amber-500 to-amber-400 text-emerald-950 font-black py-4 px-6 rounded-2xl shadow-xl hover:from-amber-400 hover:to-amber-300 transition-all flex items-center justify-center gap-3 text-base glow-btn" style="touch-action: manipulation;">
-                <i class="fa-solid fa-fingerprint text-xl opacity-90 animate-pulse"></i>
-                <span id="btn-main-tap">ابدأ العداد التفاعلي الآن</span>
+            <!-- زر التسبيح والضغط الرئيسي الفخم المعتمد على تصميمك -->
+            <button onclick="handleTap()" class="w-full bg-gradient-to-r from-amber-500 to-amber-400 text-darkGreen font-black py-4 px-6 rounded-2xl shadow-xl transition-all flex justify-between items-center text-base tap-active">
+                <div class="flex items-center gap-3">
+                    <i class="fa-solid fa-fingerprint text-xl opacity-80 animate-pulse"></i>
+                    <span id="active-dhikr-btn-text">سبّح الآن</span>
+                </div>
+                <!-- دائرة إحصاء النقرات داخل الزر -->
+                <div class="bg-darkGreen/20 text-darkGreen font-sans font-black text-lg px-3 py-0.5 rounded-xl min-w-[40px] text-center" id="counter-badge">
+                    0
+                </div>
             </button>
         </div>
 
     </div>
 
+    <!-- AUDIO FOR CLICK SOUND -->
     <audio id="click-sound" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-84.wav" preload="auto"></audio>
 
     <script>
-        // DATA MODEL & STATE
-        const dhikrData = {
-            ar: [
-                { id: 'subhan', text: 'سُبْحَانَ اللَّهِ', description: 'من قالها مئة مرة كتبت له ألف حسنة أو حطت عنه ألف خطيئة.', limit: 33 },
-                { id: 'alhamd', text: 'الْحَمْدُ لِلَّهِ', description: 'تملأ الميزان، وهي أفضل الدعاء وأحب الكلام إلى الله.', limit: 33 },
-                { id: 'allahu', text: 'اللَّهُ أَكْبَرُ', description: 'تملأ ما بين السماء والأرض، وهي عظم إجلال الخالق.', limit: 34 },
-                { id: 'istighfar', text: 'أَسْتَغْفِرُ اللَّهَ', description: 'مفتاح الرزق، والفرج، ومحو الذنوب والخطايا.', limit: 100 },
-                { id: 'salawat', text: 'اللَّهُمَّ صَلِّ وَسَلِّمْ عَلَى نَبِيِّنَا مُحَمَّدٍ', description: 'من صلى عليه صلاة صلى الله عليه بها عشراً.', limit: 100 },
-                { id: 'tawheed', text: 'لَا إِلَٰهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ', description: 'تعدل عتق رقاب، وتكتب مئة حسنة، وتمحو مئة سيئة.', limit: 100 }
-            ],
-            en: [
-                { id: 'subhan', text: 'Subhan Allah', description: 'Glory be to Allah. Repeated 100 times, 1000 rewards are earned.', limit: 33 },
-                { id: 'alhamd', text: 'Alhamdulillah', description: 'Praise be to Allah. It fills the scales of good deeds.', limit: 33 },
-                { id: 'allahu', text: 'Allahu Akbar', description: 'Allah is the Greatest. Exalting His supreme majesty.', limit: 34 },
-                { id: 'istighfar', text: 'Astaghfirullah', description: 'I seek Allah\'s forgiveness. The key to relief and sustenance.', limit: 100 },
-                { id: 'salawat', text: 'Allahumma Salli ala Muhammad', description: 'O Allah, send blessings upon Muhammad. Elevenfold mercy returned.', limit: 100 },
-                { id: 'tawheed', text: 'La ilaha illa Allah', description: 'None has the right to be worshipped except Allah alone.', limit: 100 }
-            ]
-        };
-
-        const uiText = {
-            ar: {
-                title: 'تقبل الله طاعتكم ✨',
-                subtitle: 'أهلاً بك في رحلتك الروحانية اليومية للتسبيح ومتابعة الصلاة.',
-                today: 'تسبيحات اليوم',
-                total: 'الإجمالي العام',
-                nextPrayer: 'الأذان القادم',
-                tabDhikr: 'الأذكار والتسبيح',
-                tabGoals: 'أهداف الختمة',
-                btnReset: 'تصفير العداد',
-                btnTapReady: 'اضغط للتسبيح الآن',
-                motivation: 'اقتربت من تحقيق هدفك اليومي!',
-                hint: 'كل تسبيحة ترفع درجات، وتثقل ميزان الحسنات كصدقة جارية.'
-            },
-            en: {
-                title: 'May Allah Accept ✨',
-                subtitle: 'Welcome to your daily spiritual journey of Dhikr and prayer tracking.',
-                today: 'Today\'s Dhikr',
-                total: 'Lifetime Total',
-                nextPrayer: 'Next Prayer',
-                tabDhikr: 'Dhikr & Tasbih',
-                tabGoals: 'Khatma Goals',
-                btnReset: 'Reset Counter',
-                btnTapReady: 'Tap to Count Dhikr',
-                motivation: 'You are close to your goal!',
-                hint: 'Every Tasbih elevates your degrees and heavies your balance.'
-            }
-        };
-
-        const prayerTimes = [
-            { nameAr: 'صلاة الفجر', nameEn: 'Fajr Prayer', time: '04:02', icon: 'fa-cloud-moon' },
-            { nameAr: 'شروق الشمس', nameEn: 'Sunrise', time: '05:28', icon: 'fa-sun' },
-            { nameAr: 'صلاة الظهر', nameEn: 'Dhuhr Prayer', time: '12:19', icon: 'fa-cloud-sun' },
-            { nameAr: 'صلاة العصر', nameEn: 'Asr Prayer', time: '15:43', icon: 'fa-cloud-sun-open' },
-            { nameAr: 'صلاة المغرب', nameEn: 'Maghrib Prayer', time: '19:08', icon: 'fa-cloud-sunset' },
-            { nameAr: 'صلاة العشاء', nameEn: 'Isha Prayer', time: '20:34', icon: 'fa-moon' }
+        // 1. مصفوفة الأدعية المتغيرة عشوائياً
+        const randomDuas = [
+            "اللَّهُمَّ إنِّي أَعُوذُ بِكَ مِنَ الْهَمِّ وَالْحَزَنِ، وَالْعَجْزِ وَالْكَسَلِ، وَالْبُخْلِ وَالْجُبْنِ.",
+            "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ.",
+            "اللَّهُمَّ أَعِنِّي عَلَى ذِكْرِكَ، وَشُكْرِكَ، وَحُسْنِ عِبَادَتِكَ.",
+            "يَا مُقَلِّبَ الْقُلُوبِ ثَبِّتْ قَلْبِي عَلَى دِينِكَ.",
+            "اللَّهُمَّ إِنَّكَ عَفُوٌّ تُحِبُّ الْعَفْوَ فَاعْفُ عَنِّي.",
+            "رَبِّ اغْفِرْ لِي وَلِوَالِدَيَّ وَلِلْمُؤْمِنِينَ وَالْمُؤْمِنَاتِ.",
+            "اللَّهُمَّ إنِّي أَسْأَلُكَ الهُدَى وَالتُّقَى وَالعَفَافَ وَالغِنَى."
         ];
 
-        let currentLang = localStorage.getItem('alNoorLang') || 'ar';
-        let currentTab = 'dhikr';
-        let selectedDhikrId = 'subhan';
+        // 2. قائمة الأذكار الأساسية للسبحة
+        const dhikrList = [
+            { id: 'subhan', text: 'سُبْحَانَ اللَّهِ' },
+            { id: 'alhamd', text: 'الْحَمْدُ لِلَّهِ' },
+            { id: 'allahu', text: 'اللَّهُ أَكْبَرُ' },
+            { id: 'istighfar', text: 'أَسْتَغْفِرُ اللَّهَ' }
+        ];
 
-        let stats = JSON.parse(localStorage.getItem('alNoorStats_v2')) || {
-            total: 0,
-            today: 0,
-            lastResetDate: new Date().toDateString(),
-            counts: { subhan: 0, alhamd: 0, allahu: 0, istighfar: 0, salawat: 0, tawheed: 0 }
+        // 3. مواقيت الصلاة الاسترشادية (تتغير تلقائياً بحسب الوقت)
+        const prayerTimes = [
+            { name: 'صلاة الفجر', time: '04:05', icon: 'fa-cloud-moon' },
+            { name: 'شروق الشمس', time: '05:30', icon: 'fa-sun' },
+            { name: 'صلاة الظهر', time: '12:22', icon: 'fa-cloud-sun' },
+            { name: 'صلاة العصر', time: '15:45', icon: 'fa-cloud-sun' },
+            { name: 'صلاة المغرب', time: '19:12', icon: 'fa-cloud-sunset' },
+            { name: 'صلاة العشاء', time: '20:40', icon: 'fa-moon' }
+        ];
+
+        // الحالة الافتراضية للتطبيق (State)
+        let activeDhikrId = 'subhan';
+        let stats = JSON.parse(localStorage.getItem('v3_stats')) || {
+            todayTotal: 0,
+            counts: { subhan: 0, alhamd: 0, allahu: 0, istighfar: 0 }
         };
 
-        let soundEnabled = JSON.parse(localStorage.getItem('alNoorSound')) !== false;
-
-        // INITS
+        // تشغيل التطبيق عند التحميل
         document.addEventListener('DOMContentLoaded', () => {
-            checkDateReset();
-            applyLanguageUI();
-            renderTabContent();
-            startPrayerClock();
-            setupCounterMechanic();
+            changeRandomDua();
+            renderDhikrGrid();
+            updateUI();
+            initPrayerClock();
         });
 
-        function checkDateReset() {
-            const todayStr = new Date().toDateString();
-            if (stats.lastResetDate !== todayStr) {
-                stats.today = 0;
-                stats.lastResetDate = todayStr;
-                saveStats();
-            }
+        // تغيير الدعاء بشكل عشوائي
+        function changeRandomDua() {
+            const randomIndex = Math.floor(Math.random() * randomDuas.length);
+            document.getElementById('random-dua-text').innerText = randomDuas[randomIndex];
         }
 
-        function saveStats() {
-            localStorage.setItem('alNoorStats_v2', JSON.stringify(stats));
-            document.getElementById('today-count-display').innerText = stats.today.toLocaleString();
-            document.getElementById('total-count-display').innerText = stats.total.toLocaleString();
+        // بناء بطاقات الأذكار
+        function renderDhikrGrid() {
+            const grid = document.getElementById('dhikr-grid');
+            grid.innerHTML = dhikrList.map(item => {
+                const isSelected = item.id === activeDhikrId;
+                const activeClasses = isSelected ? 'border-amber-400 bg-emerald-900/40 text-white' : 'border-emerald-900/30 bg-emerald-950/20 text-slate-400';
+                return `<div onclick="selectDhikr('${item.id}')" class="p-3 border rounded-xl cursor-pointer text-center transition-all ${activeClasses}">`
+                     + `<p class="text-xs font-bold block">${item.text}</p>`
+                     + `<span class="text-[10px] font-sans opacity-60 mt-1 block">${stats.counts[item.id] || 0}</span>`
+                     + `</div>`;
+            }).join('');
         }
 
-        // NAVIGATION & TABS
-        function switchTab(tab) {
-            currentTab = tab;
-            const tDhikr = document.getElementById('tab-dhikr');
-            const tGoals = document.getElementById('tab-goals');
+        // اختيار الذكر الحالي
+        function selectDhikr(id) {
+            activeDhikrId = id;
+            renderDhikrGrid();
+            updateUI();
+        }
+
+        // تحديث أرقام ونصوص الواجهة
+        function updateUI() {
+            const currentDhikr = dhikrList.find(d => d.id === activeDhikrId);
+            document.getElementById('active-dhikr-btn-text').innerText = currentDhikr.text;
+            document.getElementById('counter-badge').innerText = stats.counts[activeDhikrId] || 0;
+            document.getElementById('total-today').innerText = stats.todayTotal.toLocaleString();
+            localStorage.setItem('v3_stats', JSON.stringify(stats));
+        }
+
+        // ميكانيكية النقر والتسبيح
+        function handleTap() {
+            stats.todayTotal++;
+            stats.counts[activeDhikrId] = (stats.counts[activeDhikrId] || 0) + 1;
             
-            if (tab === 'dhikr') {
-                tDhikr.className = "py-2 px-3 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2 bg-emerald-900 text-white shadow-sm";
-                tGoals.className = "py-2 px-3 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2 text-emerald-400/60 hover:text-emerald-300";
-            } else {
-                tGoals.className = "py-2 px-3 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2 bg-emerald-900 text-white shadow-sm";
-                tDhikr.className = "py-2 px-3 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2 text-emerald-400/60 hover:text-emerald-300";
+            // تشغيل صوت نقرة خفيف
+            const snd = document.getElementById('click-sound');
+            if (snd) { snd.currentTime = 0; snd.play().catch(()=>{}); }
+
+            // اهتزاز الموبايل خفيف جداً إن أمكن
+            if (navigator.vibrate) navigator.vibrate(15);
+
+            // تدوير الدعاء كل 33 تسبيحة كمفاجأة للمستخدم وتنشيط روحي
+            if (stats.counts[activeDhikrId] % 33 === 0) {
+                changeRandomDua();
             }
-            renderTabContent();
+
+            updateUI();
+            renderDhikrGrid();
         }
 
-        function selectDhikrCard(id) {
-            selectedDhikrId = id;
-            renderTabContent();
-            updateMainButtonLabel();
+        // تصفير العداد
+        function resetCounter() {
+            stats.counts[activeDhikrId] = 0;
+            updateUI();
+            renderDhikrGrid();
         }
 
-        function updateMainButtonLabel() {
-            const list = dhikrData[currentLang];
-            const item = list.find(d => d.id === selectedDhikrId);
-            const btnSpan = document.getElementById('btn-main-tap');
-            if (btnSpan && item) {
-                btnSpan.innerText = item.text;
-            }
-        }
-
-        // RENDER FUNCTIONS
-        function renderTabContent() {
-            const container = document.getElementById('tab-content');
-            if (!container) return;
-
-            const list = dhikrData[currentLang];
-
-            if (currentTab === 'dhikr') {
-                container.innerHTML = list.map(item => {
-                    const isSelected = item.id === selectedDhikrId;
-                    const count = stats.counts[item.id] || 0;
-                    const borderStyle = isSelected ? 'border-amber-400 bg-emerald-900/40 shadow-md' : 'border-emerald-900/40 bg-emerald-950/40';
-                    const badgeStyle  = isSelected ? 'bg-amber-400 text-emerald-950 font-black' : 'bg-emerald-900 text-emerald-400 font-bold';
-
-                    return `<div onclick="selectDhikrCard('${item.id}')" class="page-transition border rounded-2xl p-4 cursor-pointer flex justify-between items-center gap-4 ${borderStyle}">`
-                         + `<div class="space-y-1 flex-1">`
-                         + `<h3 class="text-base font-extrabold text-white">${item.text}</h3>`
-                         + `<p class="text-[11px] text-emerald-300/60 leading-normal max-w-[250px]">${item.description}</p>`
-                         + `</div>`
-                         + `<div class="w-12 h-12 rounded-xl flex items-center justify-center font-sans text-base shadow-sm ${badgeStyle}">`
-                         + `${count}`
-                         + `</div>`
-                         + `</div>`;
-                }).join('');
-            } else {
-                container.innerHTML = list.map(item => {
-                    const c = stats.counts[item.id] || 0;
-                    const pct = Math.min(Math.round((c / item.limit) * 100), 100);
-                    const col = pct === 100 ? 'bg-amber-400' : 'bg-emerald-400';
-                    const label = currentLang === 'ar' ? item.text : item.id.toUpperCase();
-                    return '<div class="bg-emerald-900/30 border border-emerald-800/30 rounded-2xl p-3 space-y-2">'
-                         + '<div class="flex justify-between items-center">'
-                         + '<span class="text-xs font-bold text-white">' + label + '</span>'
-                         + '<span class="text-sm font-black text-amber-300 font-sans">' + c.toLocaleString() + '</span>'
-                         + '</div>'
-                         + '<div class="h-2 w-full bg-emerald-950 rounded-full overflow-hidden">'
-                         + '<div class="' + col + ' h-full rounded-full transition-all duration-500" style="width:' + pct + '%"></div>'
-                         + '</div>'
-                         + '<div class="flex justify-between text-[10px] text-emerald-400">'
-                         + '<span>' + pct + '% من الإجمالي</span>'
-                         + '<span>x33: ' + Math.floor(c/33) + ' · x100: ' + Math.floor(c/100) + '</span>'
-                         + '</div>'
-                         + '</div>';
-                }).join('');
-            }
-        }
-
-        // MAIN TAP COUNTER CORE MECHANIC
-        function setupCounterMechanic() {
-            const btn = document.getElementById('tap-zone');
-            if (!btn) return;
-
-            const handleTap = (e) => {
-                e.preventDefault();
-                
-                // Update numeric models
-                stats.total++;
-                stats.today++;
-                if (!stats.counts[selectedDhikrId]) stats.counts[selectedDhikrId] = 0;
-                stats.counts[selectedDhikrId]++;
-                
-                saveStats();
-                renderTabContent();
-
-                // Audiovisual feedbacks
-                if (soundEnabled) {
-                    const snd = document.getElementById('click-sound');
-                    if (snd) { snd.currentTime = 0; snd.play().catch(()=>{}); }
-                }
-                vibrateDevice(15);
-
-                // CSS Visual Pops
-                btn.classList.remove('glow-pulse');
-                void btn.offsetWidth; // Reflow
-                btn.classList.add('glow-pulse');
-
-                const counterGridElement = document.getElementById('today-count-display').parentElement;
-                counterGridElement.classList.remove('count-pop');
-                void counterGridElement.offsetWidth;
-                counterGridElement.add('count-pop');
-            };
-
-            btn.addEventListener('touchstart', handleTap, { passive: false });
-            btn.addEventListener('click', handleTap);
-        }
-
-        // LANGUAGES
-        function toggleLanguage() {
-            currentLang = currentLang === 'ar' ? 'en' : 'ar';
-            localStorage.setItem('alNoorLang', currentLang);
-            applyLanguageUI();
-            renderTabContent();
-        }
-
-        function applyLanguageUI() {
-            const dict = uiText[currentLang];
-            document.getElementById('txt-title').innerText = dict.title;
-            document.getElementById('txt-subtitle').innerText = dict.subtitle;
-            document.getElementById('lbl-today-count').innerText = dict.today;
-            document.getElementById('lbl-total-count').innerText = dict.total;
-            document.getElementById('lbl-next-prayer').innerText = dict.nextPrayer;
-            document.getElementById('btn-tab-dhikr').innerText = dict.tabDhikr;
-            document.getElementById('btn-tab-goals').innerText = dict.tabGoals;
-            document.getElementById('btn-reset-current').innerText = dict.btnReset;
-            updateMainButtonLabel();
+        // محرك وقت الصلاة التلقائي
+        function initPrayerClock() {
+            const clockEl = document.getElementById('live-clock');
             
-            // Adjust body directionality
-            const frame = document.getElementById('app-frame');
-            if(currentLang === 'en') {
-                frame.setAttribute('dir', 'ltr');
-                document.documentElement.setAttribute('lang', 'en');
-                document.documentElement.setAttribute('dir', 'ltr');
-            } else {
-                frame.setAttribute('dir', 'rtl');
-                document.documentElement.setAttribute('lang', 'ar');
-                document.documentElement.setAttribute('dir', 'rtl');
-            }
-        }
-
-        // RESET LOGIC
-        function resetCurrentDhikr() {
-            stats.counts[selectedDhikrId] = 0;
-            saveStats();
-            renderTabContent();
-            vibrateDevice(60);
-        }
-
-        // HAPTICS & SOUND CONTROLS
-        function vibrateDevice(ms) {
-            if (navigator.vibrate) navigator.vibrate(ms);
-        }
-
-        function toggleSound() {
-            soundEnabled = !soundEnabled;
-            localStorage.setItem('alNoorSound', JSON.stringify(soundEnabled));
-            const icon = document.getElementById('btn-sound').querySelector('i');
-            if (soundEnabled) {
-                icon.className = "fa-solid fa-volume-high text-sm";
-            } else {
-                icon.className = "fa-solid fa-volume-xmark text-sm opacity-50";
-            }
-        }
-  
-        // ENGINE PRAYER TIMES CLOCK & COUNTDOWN
-        function startPrayerClock() {
-            const updateClock = () => {
+            const runEngine = () => {
                 const now = new Date();
+                clockEl.innerText = now.toTimeString().split(' ')[0];
+
                 const hrs = now.getHours();
                 const mns = now.getMinutes();
                 const sec = now.getSeconds();
 
-                // Find next prayer matching logic
-                let next = prayerTimes[0];
+                let nextPrayer = prayerTimes[0];
                 let minDiff = Infinity;
 
                 prayerTimes.forEach(p => {
                     const [pHrs, pMns] = p.time.split(':').map(Number);
                     let diff = (pHrs * 60 + pMns) - (hrs * 60 + mns);
-                    if (diff <= 0) diff += 24 * 60; // loops tomorrow
+                    if (diff <= 0) diff += 24 * 60; // اليوم التالي
                     
                     if (diff < minDiff) {
                         minDiff = diff;
-                        next = p;
+                        nextPrayer = p;
                     }
                 });
 
-                // Set strings
-                document.getElementById('next-prayer-name').innerText = currentLang === 'ar' ? next.nameAr : next.nameEn;
-                document.getElementById('next-prayer-time').innerText = next.time;
-                
-                // Format countdown display strings
-                const [pHrs, pMns] = next.time.split(':').map(Number);
-                let totalSecNow = (hrs * 3600) + (mns * 60) + sec;
-                let totalSecTarget = (pHrs * 3600) + (pMns * 60);
-                if (totalSecTarget <= totalSecNow) totalSecTarget += 24 * 3600;
+                document.getElementById('prayer-name').innerText = nextPrayer.name;
+                document.getElementById('prayer-time').innerText = nextPrayer.time;
+                document.getElementById('prayer-icon').className = `fa-solid ${nextPrayer.icon} text-lg`;
 
-                let diffSec = totalSecTarget - totalSecNow;
+                // حساب التوقيت التنازلي المتبقي بدقة
+                const [pHrs, pMns] = nextPrayer.time.split(':').map(Number);
+                let currentTotalSec = (hrs * 3600) + (mns * 60) + sec;
+                let targetTotalSec = (pHrs * 3600) + (pMns * 60);
+                if (targetTotalSec <= currentTotalSec) targetTotalSec += 24 * 3600;
+
+                let diffSec = targetTotalSec - currentTotalSec;
                 let rHrs = Math.floor(diffSec / 3600);
                 let rMns = Math.floor((diffSec % 3600) / 60);
                 let rSec = diffSec % 60;
 
-                const pad = num => String(num).padStart(2, '0');
-                const labelPrefix = currentLang === 'ar' ? 'متبقي ' : 'Left ';
-                document.getElementById('prayer-countdown').innerText = `${labelPrefix}${pad(rHrs)}:${pad(rMns)}:${pad(rSec)}`;
-                
-                // Icon injector
-                document.getElementById('prayer-icon').className = `fa-solid ${next.icon} text-lg`;
+                const pad = n => String(n).padStart(2, '0');
+                document.getElementById('prayer-countdown').innerText = `متبقي ${pad(rHrs)}:${pad(rMns)}:${pad(rSec)}`;
             };
 
-            updateClock();
-            setInterval(updateClock, 1000);
+            runEngine();
+            setInterval(runEngine, 1000);
         }
     </script>
 </body>
