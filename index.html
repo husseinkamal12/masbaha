@@ -71,6 +71,21 @@
         .page-transition {
             transition: all 0.3s ease-in-out;
         }
+        /* Counter tap animation */
+        @keyframes countPop {
+            0%   { transform: scale(1); }
+            30%  { transform: scale(0.93); }
+            60%  { transform: scale(1.06); }
+            100% { transform: scale(1); }
+        }
+        .count-pop { animation: countPop 0.25s ease; }
+        /* Glow pulse on tap */
+        @keyframes glowPulse {
+            0%   { box-shadow: 0 0 40px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.04); }
+            50%  { box-shadow: 0 0 60px rgba(212,175,55,0.25), 0 0 20px rgba(52,211,153,0.15), inset 0 1px 0 rgba(255,255,255,0.04); }
+            100% { box-shadow: 0 0 40px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.04); }
+        }
+        .glow-pulse { animation: glowPulse 0.4s ease; }
     </style>
 </head>
 <body class="flex justify-center items-center min-h-screen bg-[#0b1311] p-0">
@@ -167,7 +182,7 @@
             <!-- SECTION 2: TASBEEH COUNTER -->
             <div id="page-tasbeeh" class="page-transition hidden space-y-5">
                 <!-- Dhikr Selector Cards (Horizontal Slider Style) -->
-                <div id="dhikr-container" class="flex gap-2 overflow-x-auto pb-1 no-scrollbar select-none">
+                <div id="dhikr-container" class="flex gap-2 overflow-x-auto pb-2 select-none" style="scrollbar-width:none;-ms-overflow-style:none;-webkit-overflow-scrolling:touch">
                     <!-- Populated dynamically to handle translation instantly -->
                 </div>
 
@@ -179,13 +194,34 @@
                 </div>
 
                 <!-- Interactive Main Counter Button -->
-                <div class="flex flex-col items-center justify-center py-6">
-                    <button onclick="incrementCounter()" class="glow-btn relative w-56 h-56 bg-gradient-to-br from-emerald-900 to-emerald-950 rounded-full flex flex-col justify-center items-center shadow-2xl border-4 border-amber-500/40 transition-all">
-                        <div class="absolute inset-4 rounded-full border border-dashed border-emerald-700/60 animate-[spin_40s_linear_infinite]"></div>
-                        
-                        <span id="main-counter-display" class="text-6xl font-black text-amber-300 font-sans mb-1">0</span>
-                        <span id="i18n-tasbeeh-tap-lbl" class="text-[10px] text-emerald-300/80 tracking-widest font-semibold uppercase">اضغط للتسبيح</span>
-                    </button>
+                <div class="flex flex-col items-center justify-center py-4 gap-3">
+                    <!-- SVG ring progress -->
+                    <div class="relative" style="width:220px;height:220px">
+                        <svg width="220" height="220" viewBox="0 0 220 220" style="transform:rotate(-90deg);position:absolute;inset:0">
+                            <circle cx="110" cy="110" r="100" fill="none" stroke="rgba(52,211,153,0.08)" stroke-width="8"/>
+                            <circle id="counter-ring" cx="110" cy="110" r="100" fill="none"
+                                stroke="url(#cgrad)" stroke-width="8" stroke-linecap="round"
+                                stroke-dasharray="628" stroke-dashoffset="628"
+                                style="transition:stroke-dashoffset 0.4s ease"/>
+                            <defs>
+                                <linearGradient id="cgrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" stop-color="#d4af37"/>
+                                    <stop offset="100%" stop-color="#f3e5ab"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                        <button onclick="incrementCounter()"
+                            class="glow-btn absolute inset-3 rounded-full flex flex-col items-center justify-center gap-1 select-none active:scale-95 transition-transform"
+                            style="background:radial-gradient(circle at 40% 35%, #0d2b1f, #022c22);border:1.5px solid rgba(212,175,55,0.25);box-shadow:0 0 40px rgba(0,0,0,0.6),inset 0 1px 0 rgba(255,255,255,0.04)">
+                            <span id="main-counter-display"
+                                class="font-sans font-black text-amber-300 leading-none select-none"
+                                style="font-size:clamp(42px,12vw,64px);letter-spacing:-2px">0</span>
+                            <span id="i18n-tasbeeh-tap-lbl"
+                                class="text-[10px] text-emerald-400/70 tracking-widest font-semibold uppercase select-none">اضغط للتسبيح</span>
+                        </button>
+                    </div>
+                    <!-- milestone label -->
+                    <div id="counter-milestone" class="text-[11px] text-emerald-400/60 font-sans"></div>
                 </div>
 
                 <!-- Controls & Reset -->
@@ -345,6 +381,12 @@
                         <span id="i18n-stats-total-lbl" class="text-xs text-emerald-300/80 block mb-1">الإجمالي التراكمي</span>
                         <span id="stats-total" class="text-2xl font-black text-white font-sans">0</span>
                     </div>
+                </div>
+
+                <!-- Per-Dhikr Stats -->
+                <div class="space-y-2">
+                    <h4 class="text-xs font-bold text-emerald-200 mb-2">📿 إحصائيات كل ذكر على حدة</h4>
+                    <div id="dhikr-stats-container" class="space-y-2"></div>
                 </div>
 
                 <!-- Progress Goal Targets (Dynamic Bars) -->
@@ -530,13 +572,37 @@
     </div>
 
     <script>
+        const dhikrList = [
+            { ar: 'سبحان الله',       en: "Subhan'Allah",          key: 'subhanallah',    meaningAr: 'سبحان الله وبحمده سبحان الله العظيم',          meaningEn: 'Glory be to Allah' },
+            { ar: 'الحمد لله',        en: 'Alhamdulillah',         key: 'alhamdulillah',  meaningAr: 'الحمد لله رب العالمين',                          meaningEn: 'Praise be to Allah' },
+            { ar: 'الله أكبر',        en: 'Allahu Akbar',          key: 'allahuakbar',    meaningAr: 'الله أكبر كبيراً والحمد لله كثيراً',             meaningEn: 'Allah is the Greatest' },
+            { ar: 'لا إله إلا الله',  en: 'La ilaha illa Allah',   key: 'lailaha',        meaningAr: 'لا إله إلا الله وحده لا شريك له',               meaningEn: 'There is no god but Allah' },
+            { ar: 'أستغفر الله',      en: 'Astaghfirullah',        key: 'astaghfirullah', meaningAr: 'أستغفر الله العظيم وأتوب إليه',                  meaningEn: 'I seek forgiveness from Allah' },
+            { ar: 'الصلاة على النبي', en: 'Salawat',               key: 'salawat',        meaningAr: 'اللهم صلِّ وسلِّم على نبينا محمد ﷺ',            meaningEn: 'O Allah, send peace & blessings upon our Prophet Muhammad ﷺ' },
+        ];
+
         // App State
-        let currentLang = 'ar'; // Default language
-        let dailyCount = 0;
-        let totalCount = 0;
+        let currentLang = 'ar';
         let activeDhikr = 'سبحان الله';
         let hapticEnabled = true;
         let soundEnabled = true;
+
+        // Per-dhikr counts (persistent)
+        const DHIKR_KEYS = ['subhanallah','alhamdulillah','allahuakbar','lailaha','astaghfirullah','salawat'];
+        function loadDhikrCounts() {
+            const saved = localStorage.getItem('alNoor_dhikrCounts');
+            if (saved) return JSON.parse(saved);
+            return Object.fromEntries(DHIKR_KEYS.map(k => [k, 0]));
+        }
+        function saveDhikrCounts() {
+            localStorage.setItem('alNoor_dhikrCounts', JSON.stringify(dhikrCounts));
+        }
+        let dhikrCounts = loadDhikrCounts();
+
+        // Legacy compat — derived from per-dhikr counts
+        function getTotalCount()  { return DHIKR_KEYS.reduce((s,k) => s + (dhikrCounts[k]||0), 0); }
+        function getDailyCount()  { return parseInt(localStorage.getItem('alNoor_dailyCount')) || 0; }
+        function getActiveCount() { const d = dhikrList.find(x => x.ar === activeDhikr); return d ? (dhikrCounts[d.key]||0) : 0; }
         
         // Prayer Times state
         let prayerTimings = {};
@@ -641,12 +707,7 @@
             }
         ];
 
-        const dhikrList = [
-            { ar: 'سبحان الله', en: 'Subhan\'Allah', meaningAr: 'سبحان الله وبحمده', meaningEn: 'Glory be to Allah' },
-            { ar: 'الحمد لله', en: 'Alhamdulillah', meaningAr: 'الحمد لله رب العالمين', meaningEn: 'Praise be to Allah' },
-            { ar: 'الله أكبر', en: 'Allahu Akbar', meaningAr: 'الله أكبر كبيراً', meaningEn: 'Allah is the Greatest' },
-            { ar: 'أستغفر الله', en: 'Astaghfirullah', meaningAr: 'أستغفر الله واتوب إليه', meaningEn: 'I seek forgiveness from Allah' }
-        ];
+
 
         // Language Translation Dictionary
         const i18nDict = {
@@ -802,9 +863,8 @@
 
         window.addEventListener('DOMContentLoaded', () => {
             // Load saved state from LocalStorage
-            dailyCount = parseInt(localStorage.getItem('alNoor_dailyCount')) || 0;
-            totalCount = parseInt(localStorage.getItem('alNoor_totalCount')) || 0;
             currentLang = localStorage.getItem('alNoor_lang') || 'ar';
+            dhikrCounts = loadDhikrCounts();
             
             // Load custom notification configuration
             const savedAlerts = localStorage.getItem('alNoor_prayerAlerts');
@@ -948,20 +1008,27 @@
         function rebuildDhikrTabs() {
             const container = document.getElementById('dhikr-container');
             container.innerHTML = '';
-            
-            dhikrList.forEach((dhikr, index) => {
+
+            dhikrList.forEach((dhikr) => {
                 const label = (currentLang === 'ar') ? dhikr.ar : dhikr.en;
-                const activeClass = (activeDhikr === dhikr.ar) 
-                    ? 'bg-amber-500 text-slate-950 border-amber-400 font-bold' 
-                    : 'bg-emerald-900/40 text-emerald-100 border-emerald-800/40 font-bold';
-                
+                const isActive = activeDhikr === dhikr.ar;
+                const count = dhikrCounts[dhikr.key] || 0;
+                const activeClass = isActive
+                    ? 'bg-amber-500 text-slate-950 border-amber-400'
+                    : 'bg-emerald-900/40 text-emerald-100 border-emerald-800/40';
+
                 const btn = document.createElement('button');
-                btn.className = `dhikr-tab-btn px-4 py-2 text-xs rounded-full border whitespace-nowrap transition-all ${activeClass}`;
+                btn.className = `dhikr-tab-btn flex-shrink-0 flex flex-col items-center px-4 py-2 rounded-2xl border whitespace-nowrap transition-all active:scale-95 ${activeClass}`;
                 btn.onclick = () => selectDhikr(dhikr.ar);
-                btn.innerText = label;
-                
+                btn.innerHTML = `
+                    <span class="text-xs font-bold leading-tight">${label}</span>
+                    <span class="text-[10px] font-sans mt-0.5 ${isActive ? 'text-slate-800' : 'text-emerald-400'}">${count.toLocaleString()}</span>`;
                 container.appendChild(btn);
             });
+
+            // scroll active chip into view
+            const activeBtn = container.querySelector('.bg-amber-500');
+            if (activeBtn) activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
 
             // Update meaning card text
             const selected = dhikrList.find(d => d.ar === activeDhikr) || dhikrList[0];
@@ -1040,20 +1107,23 @@
 
         // Increment Counter Action
         function incrementCounter() {
-            dailyCount++;
-            totalCount++;
+            const d = dhikrList.find(x => x.ar === activeDhikr);
+            if (!d) return;
+            dhikrCounts[d.key] = (dhikrCounts[d.key] || 0) + 1;
+            saveDhikrCounts();
 
-            // LocalStorage Save
-            localStorage.setItem('alNoor_dailyCount', dailyCount);
-            localStorage.setItem('alNoor_totalCount', totalCount);
+            // Update daily count
+            let daily = getDailyCount() + 1;
+            localStorage.setItem('alNoor_dailyCount', daily);
 
-            // Play Feedback
-            if (soundEnabled) {
-                playChimeSound();
-            }
-            if (hapticEnabled && navigator.vibrate) {
-                navigator.vibrate(40); // 40ms light mobile vibration
-            }
+            if (soundEnabled) playChimeSound();
+            if (hapticEnabled && navigator.vibrate) navigator.vibrate(40);
+
+            // Pop animation on counter display
+            const dispEl = document.getElementById('main-counter-display');
+            if (dispEl) { dispEl.classList.remove('count-pop'); void dispEl.offsetWidth; dispEl.classList.add('count-pop'); }
+            const btnEl = document.querySelector('.glow-btn');
+            if (btnEl) { btnEl.classList.remove('glow-pulse'); void btnEl.offsetWidth; btnEl.classList.add('glow-pulse'); }
 
             updateUI();
         }
@@ -1068,8 +1138,8 @@
         }
 
         function confirmReset() {
-            dailyCount = 0;
-            localStorage.setItem('alNoor_dailyCount', dailyCount);
+            const d = dhikrList.find(x => x.ar === activeDhikr);
+            if (d) { dhikrCounts[d.key] = 0; saveDhikrCounts(); }
             updateUI();
             closeResetConfirmation();
             showToast(i18nDict[currentLang].toastReset);
@@ -1406,50 +1476,65 @@
 
         // Update All UI Elements
         function updateUI() {
-            // Update Dashboard Counts
-            document.getElementById('home-daily-count').innerText = dailyCount.toLocaleString();
-            document.getElementById('home-total-count').innerText = totalCount.toLocaleString();
+            const activeCount = getActiveCount();
+            const total       = getTotalCount();
+            const daily       = getDailyCount();
 
-            // Update Main Counter Slide Display
-            document.getElementById('main-counter-display').innerText = dailyCount;
+            // ── Dashboard ──
+            document.getElementById('home-daily-count').innerText = daily.toLocaleString();
+            document.getElementById('home-total-count').innerText = total.toLocaleString();
 
-            // Nav Badge Update
-            const badge = document.getElementById('nav-count-badge');
-            if(dailyCount > 0) {
-                badge.classList.remove('hidden');
-                badge.innerText = dailyCount;
-            } else {
-                badge.classList.add('hidden');
+            // ── Main counter display (shows active dhikr count) ──
+            document.getElementById('main-counter-display').innerText = activeCount.toLocaleString();
+
+            // ── Counter ring (goal = 33, loops) ──
+            const ringEl = document.getElementById('counter-ring');
+            if (ringEl) {
+                const progress = activeCount === 0 ? 0 : ((activeCount - 1) % 33 + 1) / 33;
+                ringEl.style.strokeDashoffset = 628 - progress * 628;
             }
 
-            // Progress Ring logic (Goal: 100)
-            const maxGoal = 100;
-            const percentage = Math.min(Math.round((dailyCount / maxGoal) * 100), 100);
-            document.getElementById('goal-percentage').innerText = `${percentage}%`;
+            // ── Milestone label ──
+            const ms = document.getElementById('counter-milestone');
+            if (ms) {
+                const k33  = Math.floor(activeCount / 33);
+                const k100 = Math.floor(activeCount / 100);
+                if (activeCount === 0)    ms.innerText = '';
+                else if (k100 > 0) ms.innerText = k100 + ' ختمة مئوية · ' + k33 + ' ختمة فردية';
+                else if (k33  > 0) ms.innerText = k33  + ' ختمة فردية · ' + (activeCount % 33) + ' / 33';
+                else               ms.innerText = activeCount + ' / 33';
+            }
 
-            // SVG Stroke Dashoffset calculation (r=34 => circumference ~ 213.6)
-            const circumference = 213.6;
-            const offset = circumference - (percentage / 100) * circumference;
+            // ── Nav badge ──
+            const badge = document.getElementById('nav-count-badge');
+            if (total > 0) {
+                badge.classList.remove('hidden');
+                badge.innerText = total > 999 ? '999+' : total;
+            } else badge.classList.add('hidden');
+
+            // ── Home ring (goal = 100) ──
+            const pct = Math.min(Math.round((activeCount / 100) * 100), 100);
+            document.getElementById('goal-percentage').innerText = pct + '%';
+            const offset = 213.6 - (pct / 100) * 213.6;
             document.getElementById('goal-progress-circle').setAttribute('stroke-dashoffset', offset);
 
-            // Stats page data
-            document.getElementById('stats-daily').innerText = dailyCount;
-            document.getElementById('stats-total').innerText = totalCount;
+            // ── Stats page ──
+            document.getElementById('stats-daily').innerText = daily.toLocaleString();
+            document.getElementById('stats-total').innerText = total.toLocaleString();
+            renderDhikrStatsTable();
 
-            // Update Progress Bars (33, 100, 1000)
-            updateProgressBar('33', 33);
-            updateProgressBar('100', 100);
+            // ── Progress bars (based on active dhikr) ──
+            updateProgressBar('33',   33);
+            updateProgressBar('100',  100);
             updateProgressBar('1000', 1000);
 
-            // Update alarm bell toggles visually
+            // ── Bell toggles ──
             for (const key in prayerAlerts) {
-                const btn = document.getElementById(`alert-${key}`);
+                const btn = document.getElementById('alert-' + key);
                 if (btn) {
-                    if (prayerAlerts[key]) {
-                        btn.innerHTML = `<i class="fa-solid fa-bell text-amber-400"></i>`;
-                    } else {
-                        btn.innerHTML = `<i class="fa-regular fa-bell-slash text-emerald-100/30"></i>`;
-                    }
+                    btn.innerHTML = prayerAlerts[key]
+                        ? '<i class="fa-solid fa-bell text-amber-400"></i>'
+                        : '<i class="fa-regular fa-bell-slash text-emerald-100/30"></i>';
                 }
             }
         }
@@ -1470,13 +1555,45 @@
             }
         }
 
+
+        // ── PER-DHIKR STATS TABLE ────────────────────────────
+        function renderDhikrStatsTable() {
+            const container = document.getElementById('dhikr-stats-container');
+            if (!container) return;
+            const total = getTotalCount() || 1;
+            const barColors = {
+                subhanallah: 'bg-emerald-500', alhamdulillah: 'bg-amber-500',
+                allahuakbar: 'bg-indigo-500',  lailaha: 'bg-rose-500',
+                astaghfirullah: 'bg-sky-500',  salawat: 'bg-purple-500'
+            };
+            container.innerHTML = dhikrList.map(function(d) {
+                const c = dhikrCounts[d.key] || 0;
+                const pct = Math.min((c / total) * 100, 100).toFixed(1);
+                const col = barColors[d.key] || 'bg-emerald-500';
+                const label = currentLang === 'ar' ? d.ar : d.en;
+                return '<div class="bg-emerald-900/30 border border-emerald-800/30 rounded-2xl p-3 space-y-2">'
+                     + '<div class="flex justify-between items-center">'
+                     + '<span class="text-xs font-bold text-white">' + label + '</span>'
+                     + '<span class="text-sm font-black text-amber-300 font-sans">' + c.toLocaleString() + '</span>'
+                     + '</div>'
+                     + '<div class="h-2 w-full bg-emerald-950 rounded-full overflow-hidden">'
+                     + '<div class="' + col + ' h-full rounded-full transition-all duration-500" style="width:' + pct + '%"></div>'
+                     + '</div>'
+                     + '<div class="flex justify-between text-[10px] text-emerald-400">'
+                     + '<span>' + pct + '% من الإجمالي</span>'
+                     + '<span>x33: ' + Math.floor(c/33) + ' · x100: ' + Math.floor(c/100) + '</span>'
+                     + '</div>'
+                     + '</div>';
+            }).join('');
+        }
+
         function updateProgressBar(id, limit) {
-            const bar = document.getElementById(`progress-bar-${id}`);
-            const text = document.getElementById(`progress-text-${id}`);
-            
-            const pct = Math.min((dailyCount / limit) * 100, 100);
-            bar.style.width = `${pct}%`;
-            text.innerText = `${dailyCount}/${limit}`;
+            const bar  = document.getElementById('progress-bar-' + id);
+            const text = document.getElementById('progress-text-' + id);
+            if (!bar || !text) return;
+            const count = getActiveCount();
+            bar.style.width = Math.min((count / limit) * 100, 100) + '%';
+            text.innerText = count.toLocaleString() + '/' + limit;
         }
     </script>
 </body>
