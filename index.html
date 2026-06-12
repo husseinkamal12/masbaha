@@ -4,13 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Al-Noor Hub | صدقة جارية وأوقات الصلاة</title>
-    <!-- Tailwind CSS for modern layout -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts: Cairo for Arabic & Plus Jakarta Sans for English -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- FontAwesome for Premium Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <script>
@@ -24,27 +21,25 @@
                             900: '#022c22',
                             950: '#011c15',
                         },
-                        gold: {
-                            DEFAULT: '#d4af37',
-                            light: '#f3e5ab',
-                            dark: '#aa7c11'
+                        amber: {
+                            400: '#fbbf24',
                         }
                     },
                     fontFamily: {
-                        cairo: ['Cairo', 'sans-serif'],
-                        sans: ['Plus Jakarta Sans', 'Cairo', 'sans-serif']
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        arabic: ['Cairo', 'sans-serif'],
                     }
                 }
             }
         }
     </script>
-    
+
     <style>
         body {
             font-family: 'Cairo', 'Plus Jakarta Sans', sans-serif;
-            background-color: #011c15; /* يجعل الخلفية الخارجية بلون تطبيقك الزيتي الفخم */
+            background-color: #011c15 !important; /* لون الخلفية الخارجي الموحد لجميع الشاشات */
         }
-        /* سكرول بار متناسق */
+        /* Custom scrollbar to keep it sleek */
         ::-webkit-scrollbar {
             width: 4px;
         }
@@ -55,7 +50,7 @@
             background: #047857;
             border-radius: 10px;
         }
-        /* تأثيرات الضغط والتوهج الخاصة بك */
+        /* Glow Effect for Counter Button */
         .glow-btn:active {
             transform: scale(0.96);
             box-shadow: 0 0 25px rgba(212, 175, 55, 0.5);
@@ -67,9 +62,11 @@
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
+        /* smooth transitions */
         .page-transition {
             transition: all 0.3s ease-in-out;
         }
+        /* Counter tap animation */
         @keyframes countPop {
             0%   { transform: scale(1); }
             30%  { transform: scale(0.93); }
@@ -77,6 +74,7 @@
             100% { transform: scale(1); }
         }
         .count-pop { animation: countPop 0.25s ease; }
+        /* Glow pulse on tap */
         @keyframes glowPulse {
             0%   { box-shadow: 0 0 40px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.04); }
             50%  { box-shadow: 0 0 60px rgba(212,175,55,0.25), 0 0 20px rgba(52,211,153,0.15), inset 0 1px 0 rgba(255,255,255,0.04); }
@@ -85,1511 +83,415 @@
         .glow-pulse { animation: glowPulse 0.4s ease; }
     </style>
 </head>
-<body class="bg-[#011c15] text-slate-100 antialiased font-arabic selection:bg-emerald-500/30 select-none min-h-screen flex justify-center items-start">
+<body class="bg-emerald-950 text-slate-100 antialiased font-arabic selection:bg-emerald-500/30 select-none overflow-x-hidden min-h-screen flex justify-center items-start">
 
-    <!-- Mobile Screen Frame (simulate iOS/Android preview) -->
-<div id="app-frame" class="relative w-full max-w-md min-h-screen bg-[#011c15] flex flex-col justify-between mx-auto shadow-2xl border-x border-emerald-900/20" dir="rtl">        
-        <!-- Status bar removed -->
-
-        <!-- App Dedicated Header (Sadakah Jariyah & Language Toggle) -->
-        <div class="px-5 py-2 flex justify-between items-center border-b border-emerald-900 bg-emerald-900/30 backdrop-blur-md">
-            <div class="text-start space-y-0.5">
-                <span id="i18n-header-tag" class="inline-block bg-amber-500/10 text-amber-400 text-[10px] px-2.5 py-1 rounded-full border border-amber-500/20 font-semibold tracking-wider">
-                    <i class="fa-solid fa-heart text-[8px] mx-1"></i> صدقة جارية
-                </span>
-                <p class="text-xs text-emerald-100/80 leading-relaxed">
-                    <span id="i18n-header-dedicated">عن روح المغفور له بإذن الله تعالى</span> <button onclick="editDeceasedName()" class="text-amber-300 font-bold underline-offset-2 hover:opacity-80 active:scale-95 transition-all" id="i18n-header-uncle" title="اضغط لتعديل الاسم">جدي</button> <button onclick="editDeceasedName()" class="w-4 h-4 rounded-full bg-amber-500/20 border border-amber-500/30 text-amber-400 inline-flex items-center justify-center hover:bg-amber-500/40 transition-all"><i class="fa-solid fa-pen" style="font-size:7px"></i></button>
-                </p>
+    <div id="app-frame" class="relative w-full md:max-w-md min-h-screen bg-emerald-950 flex flex-col justify-between mx-auto shadow-2xl border-x border-emerald-900/20" dir="rtl">
+        
+        <div id="main-content" class="flex-1 px-5 py-4 space-y-5">
+            <div class="flex justify-between items-center pt-2">
+                <div class="flex items-center gap-2.5">
+                    <span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wider">صدقة جارية</span>
+                    <p class="text-xs text-emerald-100/70 font-medium">عن روح المغفور له بإذن الله <span class="text-amber-400 font-bold">جدي</span> 🤍</p>
+                </div>
+                <button onclick="toggleLanguage()" class="text-xs font-semibold bg-emerald-900/40 hover:bg-emerald-900/60 border border-emerald-800/60 px-3 py-1.5 rounded-xl text-emerald-300 transition-all flex items-center gap-1.5 font-sans">
+                    <span>English</span>
+                    <i class="fa-solid fa-globe text-[10px] opacity-70"></i>
+                </button>
             </div>
+
+            <div class="bg-gradient-to-br from-emerald-900/60 to-emerald-950/40 border border-emerald-800/40 rounded-3xl p-5 relative overflow-hidden shadow-inner">
+                <div class="absolute -right-10 -top-10 w-32 h-32 bg-emerald-500/5 rounded-full blur-2xl"></div>
+                <div class="relative z-10 text-center space-y-1">
+                    <h1 class="text-xl font-black text-white tracking-wide" id="txt-title">تقبل الله طاعتكم ✨</h1>
+                    <p class="text-xs text-emerald-200/50 max-w-[240px] mx-auto leading-relaxed" id="txt-subtitle">أهلاً بك في رحلتك الروحانية اليومية للتسبيح ومتابعة الصلاة.</p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3 mt-5">
+                    <div class="bg-emerald-950/60 border border-emerald-900/50 rounded-2xl p-3.5 text-center transition-all hover:border-emerald-800/60">
+                        <span class="text-[10px] font-bold text-emerald-400/70 block uppercase tracking-wider mb-1" id="lbl-today-count">تسبيحات اليوم</span>
+                        <span id="today-count-display" class="text-2xl font-black text-white font-sans tracking-tight">0</span>
+                    </div>
+                    <div class="bg-emerald-950/60 border border-emerald-900/50 rounded-2xl p-3.5 text-center transition-all hover:border-emerald-800/60">
+                        <span class="text-[10px] font-bold text-emerald-400/70 block uppercase tracking-wider mb-1" id="lbl-total-count">الإجمالي العام</span>
+                        <span id="total-count-display" class="text-2xl font-black text-amber-400 font-sans tracking-tight">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-emerald-900/30 border border-emerald-800/30 rounded-2xl p-4 flex justify-between items-center transition-all hover:bg-emerald-900/40">
+                <div class="flex items-center gap-3.5">
+                    <div class="w-10 h-10 rounded-xl bg-amber-400/10 flex items-center justify-center text-amber-400 border border-amber-400/20 shadow-sm" id="prayer-icon-container">
+                        <i class="fa-solid fa-cloud-sun text-lg" id="prayer-icon"></i>
+                    </div>
+                    <div>
+                        <span class="text-[10px] font-bold text-amber-400 block tracking-wider uppercase" id="lbl-next-prayer">الأذان القادم</span>
+                        <span id="next-prayer-name" class="text-sm font-extrabold text-white">صلاة الظهر</span>
+                    </div>
+                </div>
+                <div class="text-left" dir="ltr">
+                    <span id="next-prayer-time" class="text-lg font-black text-white font-sans tracking-tight">12:19</span>
+                    <span id="prayer-countdown" class="text-[10px] text-emerald-400/70 block font-medium mt-0.5">متبقي 03:48:30</span>
+                </div>
+            </div>
+
+            <div class="bg-emerald-950/80 p-1 rounded-xl border border-emerald-900/50 grid grid-cols-2 gap-1">
+                <button onclick="switchTab('dhikr')" id="tab-dhikr" class="py-2 px-3 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2 bg-emerald-900 text-white shadow-sm">
+                    <i class="fa-solid fa-beads text-[11px]"></i>
+                    <span id="btn-tab-dhikr">الأذكار والتسبيح</span>
+                </button>
+                <button onclick="switchTab('goals')" id="tab-goals" class="py-2 px-3 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2 text-emerald-400/60 hover:text-emerald-300">
+                    <i class="fa-solid fa-bullseye text-[11px]"></i>
+                    <span id="btn-tab-goals">أهداف الختمة</span>
+                </button>
+            </div>
+
+            <div id="tab-content" class="space-y-4 min-h-[180px]">
+                </div>
+        </div>
+
+        <div class="p-5 bg-gradient-to-t from-emerald-950 via-emerald-950 to-transparent pt-10 sticky bottom-0 z-40 space-y-4">
             
-            <!-- Sleek Language Switcher Button -->
-            <button onclick="toggleLanguage()" class="bg-emerald-900/60 hover:bg-emerald-900 border border-emerald-800 text-amber-300 text-[11px] font-bold px-3 py-1.5 rounded-xl flex items-center gap-1.5 transition-all active:scale-95">
-                <i class="fa-solid fa-globe text-xs"></i>
-                <span id="lang-btn-text">English</span>
+            <div class="flex justify-between items-center gap-3">
+                <button onclick="resetCurrentDhikr()" class="flex-1 bg-emerald-900/30 hover:bg-emerald-900/50 border border-emerald-800/40 text-emerald-400 py-3 px-4 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 active:scale-95">
+                    <i class="fa-solid fa-rotate-right text-[11px]"></i>
+                    <span id="btn-reset-current">تصفير العداد</span>
+                </button>
+                <button onclick="vibrateDevice(50)" class="w-12 h-11 bg-emerald-900/30 border border-emerald-800/40 text-emerald-400 rounded-xl transition-all flex items-center justify-center active:scale-95 hover:bg-emerald-900/50">
+                    <i class="fa-solid fa-vibration text-sm"></i>
+                </button>
+                <button onclick="toggleSound()" id="btn-sound" class="w-12 h-11 bg-emerald-900/30 border border-emerald-800/40 text-emerald-400 rounded-xl transition-all flex items-center justify-center active:scale-95 hover:bg-emerald-900/50">
+                    <i class="fa-solid fa-volume-high text-sm"></i>
+                </button>
+            </div>
+
+            <button id="tap-zone" class="w-full bg-gradient-to-r from-amber-500 to-amber-400 text-emerald-950 font-black py-4 px-6 rounded-2xl shadow-xl hover:from-amber-400 hover:to-amber-300 transition-all flex items-center justify-center gap-3 text-base glow-btn" style="touch-action: manipulation;">
+                <i class="fa-solid fa-fingerprint text-xl opacity-90 animate-pulse"></i>
+                <span id="btn-main-tap">ابدأ العداد التفاعلي الآن</span>
             </button>
         </div>
 
-        <!-- MAIN DYNAMIC CONTENT CONTAINER (With Scroll) -->
-        <div id="main-content" class="flex-1 px-5 py-4 space-y-5">
-            
-            <!-- SECTION 1: HOME DASHBOARD (Default) -->
-            <div id="page-home" class="page-transition space-y-4">
-                <!-- Welcome Card -->
-                <div class="bg-gradient-to-br from-emerald-900/70 to-emerald-950 border border-emerald-800/40 rounded-3xl p-5 text-white relative overflow-hidden shadow-xl">
-                    <div class="absolute -left-10 -bottom-10 w-32 h-32 bg-amber-500/5 rounded-full blur-2xl"></div>
-                    <h2 id="i18n-home-welcome" class="text-lg font-bold mb-1">تقبل الله طاعتكم ✨</h2>
-                    <p id="i18n-home-sub" class="text-xs text-emerald-200/80 mb-4">أهلاً بك في رحلتك الروحانية اليومية للتسبيح ومتابعة الصلاة.</p>
-                    
-                    <div class="grid grid-cols-2 gap-3 pt-2">
-                        <div class="bg-emerald-900/50 border border-emerald-800/40 rounded-2xl p-3">
-                            <span id="i18n-home-daily-lbl" class="text-[10px] text-emerald-300 block mb-1">تسبيحات اليوم</span>
-                            <span id="home-daily-count" class="text-xl font-bold font-sans text-amber-300">0</span>
-                        </div>
-                        <div class="bg-emerald-900/50 border border-emerald-800/40 rounded-2xl p-3">
-                            <span id="i18n-home-total-lbl" class="text-[10px] text-emerald-300 block mb-1">الإجمالي العام</span>
-                            <span id="home-total-count" class="text-xl font-bold font-sans text-white">0</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Next Prayer Quick Card -->
-                <div class="bg-gradient-to-r from-amber-500/10 to-amber-600/10 border border-amber-500/20 rounded-3xl p-4 flex justify-between items-center">
-                    <div class="space-y-1">
-                        <span id="i18n-home-next-prayer-tag" class="text-[10px] text-amber-400 font-bold block uppercase tracking-wider">الأذان القادم</span>
-                        <h4 id="quick-next-prayer-name" class="text-sm font-bold text-white">جاري الحساب...</h4>
-                    </div>
-                    <div class="text-end">
-                        <span id="quick-next-prayer-time" class="text-lg font-bold text-amber-300 font-sans block">--:--</span>
-                        <span id="quick-next-prayer-countdown" class="text-[10px] text-emerald-300 font-sans block">متبقي --:--:--</span>
-                    </div>
-                </div>
-
-                <!-- Daily Target Ring Card -->
-                <div class="bg-emerald-950/80 rounded-3xl p-5 shadow-lg border border-emerald-900/40 space-y-4">
-                    <div class="flex justify-between items-center">
-                        <h3 id="i18n-home-target-title" class="text-sm font-bold text-emerald-100">هدف الختمة اليومي</h3>
-                        <span id="i18n-home-target-badge" class="text-xs font-sans text-amber-300 bg-amber-500/10 px-2.5 py-1 rounded-full font-semibold">المستهدف: 100</span>
-                    </div>
-                    
-                    <div class="flex items-center gap-5">
-                        <div class="relative w-20 h-20 flex-shrink-0">
-                            <!-- Circular Progress -->
-                            <svg class="w-full h-full transform -rotate-90">
-                                <circle cx="40" cy="40" r="34" stroke="#022c22" stroke-width="6" fill="transparent"/>
-                                <circle id="goal-progress-circle" cx="40" cy="40" r="34" stroke="#d4af37" stroke-width="6" fill="transparent" 
-                                        stroke-dasharray="213.6" stroke-dashoffset="213.6" stroke-linecap="round" class="transition-all duration-500"/>
-                            </svg>
-                            <span id="goal-percentage" class="absolute inset-0 flex items-center justify-center text-xs font-bold text-emerald-100 font-sans">0%</span>
-                        </div>
-                        <div class="space-y-1 text-start">
-                            <h4 id="i18n-home-target-headline" class="text-xs font-bold text-emerald-200">اقتربت من تحقيق هدفك اليومي!</h4>
-                            <p id="i18n-home-target-desc" class="text-[11px] text-emerald-400/80 leading-relaxed">كل تسبيحة ترفع درجات، وتُثقل ميزان الحسنات كصدقة جارية.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Fast Action: Start Tasbeeh -->
-                <button onclick="switchTab('tasbeeh')" class="w-full py-4 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-bold rounded-2xl shadow-lg shadow-amber-500/20 hover:shadow-amber-500/30 active:scale-[0.98] transition-all flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-fingerprint text-lg"></i>
-                    <span id="i18n-home-btn">ابدأ العداد التفاعلي الآن</span>
-                </button>
-            </div>
-
-            <!-- SECTION 2: TASBEEH COUNTER -->
-            <div id="page-tasbeeh" class="page-transition hidden space-y-5">
-                <!-- Dhikr Selector Cards (Horizontal Slider Style) -->
-                <div id="dhikr-container" class="flex gap-2 overflow-x-auto pb-2 select-none" style="scrollbar-width:none;-ms-overflow-style:none;-webkit-overflow-scrolling:touch">
-                    <!-- Populated dynamically to handle translation instantly -->
-                </div>
-
-                <!-- Display Dhikr Card -->
-                <div class="bg-emerald-900/40 rounded-3xl p-6 text-center shadow-lg border border-emerald-800/30 relative">
-                    <i class="fa-solid fa-bookmark text-amber-500/20 absolute top-4 start-4 text-xl"></i>
-                    <h3 id="current-dhikr-text" class="text-3xl font-extrabold text-white tracking-wide mb-2">سبحان الله</h3>
-                    <p id="dhikr-meaning" class="text-xs text-emerald-300 font-sans italic">Glory be to Allah</p>
-                </div>
-
-                <!-- Interactive Main Counter Button -->
-                <div class="flex flex-col items-center justify-center py-4 gap-3">
-                    <!-- SVG ring progress -->
-                    <div class="relative" style="width:220px;height:220px">
-                        <svg width="220" height="220" viewBox="0 0 220 220" style="transform:rotate(-90deg);position:absolute;inset:0">
-                            <circle cx="110" cy="110" r="100" fill="none" stroke="rgba(52,211,153,0.08)" stroke-width="8"/>
-                            <circle id="counter-ring" cx="110" cy="110" r="100" fill="none"
-                                stroke="url(#cgrad)" stroke-width="8" stroke-linecap="round"
-                                stroke-dasharray="628" stroke-dashoffset="628"
-                                style="transition:stroke-dashoffset 0.4s ease"/>
-                            <defs>
-                                <linearGradient id="cgrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                                    <stop offset="0%" stop-color="#d4af37"/>
-                                    <stop offset="100%" stop-color="#f3e5ab"/>
-                                </linearGradient>
-                            </defs>
-                        </svg>
-                        <button onclick="incrementCounter()"
-                            class="glow-btn absolute inset-3 rounded-full flex flex-col items-center justify-center gap-1 select-none active:scale-95 transition-transform"
-                            style="background:radial-gradient(circle at 40% 35%, #0d2b1f, #022c22);border:1.5px solid rgba(212,175,55,0.25);box-shadow:0 0 40px rgba(0,0,0,0.6),inset 0 1px 0 rgba(255,255,255,0.04)">
-                            <span id="main-counter-display"
-                                class="font-sans font-black text-amber-300 leading-none select-none"
-                                style="font-size:clamp(42px,12vw,64px);letter-spacing:-2px">0</span>
-                            <span id="i18n-tasbeeh-tap-lbl"
-                                class="text-[10px] text-emerald-400/70 tracking-widest font-semibold uppercase select-none">اضغط للتسبيح</span>
-                        </button>
-                    </div>
-                    <!-- milestone label -->
-                    <div id="counter-milestone" class="text-[11px] text-emerald-400/60 font-sans"></div>
-                </div>
-
-                <!-- Controls & Reset -->
-                <div class="flex justify-between items-center px-4">
-                    <!-- Reset Button -->
-                    <button onclick="showResetConfirmation()" class="flex items-center gap-2 text-xs font-bold text-red-400 bg-red-500/10 border border-red-500/20 px-3.5 py-2 rounded-xl active:scale-95 transition-all">
-                        <i class="fa-solid fa-rotate-left"></i>
-                        <span id="i18n-tasbeeh-reset-btn">تصفير</span>
-                    </button>
-
-                    <!-- Toggle Control Settings (Sound/Vibe) -->
-                    <div class="flex gap-3">
-                        <button id="vibe-toggle-btn" onclick="toggleHaptic()" class="w-10 h-10 rounded-xl flex items-center justify-center bg-emerald-900/30 text-emerald-200 border border-emerald-800/30 text-sm active:scale-90 transition-all" title="اهتزاز">
-                            <i class="fa-solid fa-mobile-screen-button"></i>
-                        </button>
-                        <button id="sound-toggle-btn" onclick="toggleAudio()" class="w-10 h-10 rounded-xl flex items-center justify-center bg-emerald-900/30 text-emerald-200 border border-emerald-800/30 text-sm active:scale-90 transition-all" title="صوت">
-                            <i class="fa-solid fa-volume-high"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- SECTION 3: PRAYER TIMES & ALERTS -->
-            <div id="page-prayer" class="page-transition hidden space-y-4">
-                <div class="flex justify-between items-center">
-                    <h3 id="i18n-prayer-title" class="text-base font-bold text-white">مواقيت الصلاة والتنبيهات</h3>
-                    <button onclick="requestNotificationPermission()" id="noti-permission-badge" class="text-[10px] bg-amber-500/10 text-amber-400 border border-amber-500/30 px-2 py-1 rounded-full font-bold flex items-center gap-1">
-                        <i class="fa-regular fa-bell animate-swing"></i>
-                        <span id="i18n-prayer-noti-btn">تفعيل الإشعارات</span>
-                    </button>
-                </div>
-
-                <!-- Location details and selector -->
-                <div class="bg-emerald-900/30 border border-emerald-800/30 rounded-2xl p-3 flex justify-between items-center text-xs text-emerald-100">
-                    <div class="flex items-center gap-2">
-                        <i class="fa-solid fa-location-dot text-amber-400"></i>
-                        <span id="current-location-text">جاري تحديد الموقع...</span>
-                    </div>
-                    <button onclick="getUserLocation()" class="text-amber-300 hover:underline flex items-center gap-1">
-                        <i class="fa-solid fa-location-crosshairs"></i>
-                        <span id="i18n-prayer-refresh-btn">تحديث</span>
-                    </button>
-                </div>
-
-                <!-- Next Prayer Countdown Hero -->
-                <div class="bg-gradient-to-br from-emerald-900/60 to-emerald-950 border border-emerald-800/50 rounded-3xl p-5 text-center relative overflow-hidden shadow-lg">
-                    <div class="absolute right-2 top-2 text-6xl text-emerald-800/10"><i class="fa-solid fa-mosque"></i></div>
-                    <span id="i18n-prayer-hero-tag" class="text-xs text-amber-400 uppercase font-bold tracking-wider block mb-1">الصلاة القادمة</span>
-                    <h2 id="prayer-hero-name" class="text-2xl font-black text-white mb-2">--:--</h2>
-                    <div class="inline-block bg-emerald-900/80 px-4 py-2 rounded-2xl border border-emerald-800/60">
-                        <span id="i18n-prayer-hero-rem" class="text-xs text-emerald-300 block mb-0.5">الوقت المتبقي للأذان</span>
-                        <span id="prayer-hero-countdown" class="text-xl font-bold font-sans text-amber-300">--:--:--</span>
-                    </div>
-                </div>
-
-                <!-- Prayers List Grid -->
-                <div class="bg-emerald-950/40 border border-emerald-900/50 rounded-3xl p-4 space-y-2.5 shadow-inner">
-                    <!-- Fajr -->
-                    <div id="prayer-item-Fajr" class="prayer-row flex justify-between items-center p-3 rounded-2xl border border-transparent transition-all">
-                        <div class="flex items-center gap-3">
-                            <span class="w-8 h-8 rounded-full bg-emerald-900/50 flex items-center justify-center text-emerald-300 text-xs"><i class="fa-solid fa-cloud-moon"></i></span>
-                            <span id="i18n-p-fajr" class="text-xs font-bold text-white">الفجر</span>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <span id="time-Fajr" class="text-sm font-sans font-bold text-emerald-100">--:--</span>
-                            <button onclick="togglePrayerNotification('Fajr')" id="alert-Fajr" class="text-emerald-400/60 hover:text-amber-400 text-sm"><i class="fa-regular fa-bell"></i></button>
-                        </div>
-                    </div>
-                    <!-- Sunrise -->
-                    <div id="prayer-item-Sunrise" class="prayer-row flex justify-between items-center p-3 rounded-2xl border border-transparent transition-all opacity-80">
-                        <div class="flex items-center gap-3">
-                            <span class="w-8 h-8 rounded-full bg-emerald-900/50 flex items-center justify-center text-emerald-300 text-xs"><i class="fa-solid fa-sun"></i></span>
-                            <span id="i18n-p-sunrise" class="text-xs font-bold text-white">الشروق</span>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <span id="time-Sunrise" class="text-sm font-sans font-bold text-emerald-100">--:--</span>
-                            <span class="text-transparent text-sm"><i class="fa-regular fa-bell"></i></span>
-                        </div>
-                    </div>
-                    <!-- Dhuhr -->
-                    <div id="prayer-item-Dhuhr" class="prayer-row flex justify-between items-center p-3 rounded-2xl border border-transparent transition-all">
-                        <div class="flex items-center gap-3">
-                            <span class="w-8 h-8 rounded-full bg-emerald-900/50 flex items-center justify-center text-emerald-300 text-xs"><i class="fa-solid fa-certificate"></i></span>
-                            <span id="i18n-p-dhuhr" class="text-xs font-bold text-white">الظهر</span>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <span id="time-Dhuhr" class="text-sm font-sans font-bold text-emerald-100">--:--</span>
-                            <button onclick="togglePrayerNotification('Dhuhr')" id="alert-Dhuhr" class="text-emerald-400/60 hover:text-amber-400 text-sm"><i class="fa-regular fa-bell"></i></button>
-                        </div>
-                    </div>
-                    <!-- Asr -->
-                    <div id="prayer-item-Asr" class="prayer-row flex justify-between items-center p-3 rounded-2xl border border-transparent transition-all">
-                        <div class="flex items-center gap-3">
-                            <span class="w-8 h-8 rounded-full bg-emerald-900/50 flex items-center justify-center text-emerald-300 text-xs"><i class="fa-solid fa-sun-plant-wilt"></i></span>
-                            <span id="i18n-p-asr" class="text-xs font-bold text-white">العصر</span>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <span id="time-Asr" class="text-sm font-sans font-bold text-emerald-100">--:--</span>
-                            <button onclick="togglePrayerNotification('Asr')" id="alert-Asr" class="text-emerald-400/60 hover:text-amber-400 text-sm"><i class="fa-regular fa-bell"></i></button>
-                        </div>
-                    </div>
-                    <!-- Maghrib -->
-                    <div id="prayer-item-Maghrib" class="prayer-row flex justify-between items-center p-3 rounded-2xl border border-transparent transition-all">
-                        <div class="flex items-center gap-3">
-                            <span class="w-8 h-8 rounded-full bg-emerald-900/50 flex items-center justify-center text-emerald-300 text-xs"><i class="fa-solid fa-cloud-sun"></i></span>
-                            <span id="i18n-p-maghrib" class="text-xs font-bold text-white">المغرب</span>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <span id="time-Maghrib" class="text-sm font-sans font-bold text-emerald-100">--:--</span>
-                            <button onclick="togglePrayerNotification('Maghrib')" id="alert-Maghrib" class="text-emerald-400/60 hover:text-amber-400 text-sm"><i class="fa-regular fa-bell"></i></button>
-                        </div>
-                    </div>
-                    <!-- Isha -->
-                    <div id="prayer-item-Isha" class="prayer-row flex justify-between items-center p-3 rounded-2xl border border-transparent transition-all">
-                        <div class="flex items-center gap-3">
-                            <span class="w-8 h-8 rounded-full bg-emerald-900/50 flex items-center justify-center text-emerald-300 text-xs"><i class="fa-solid fa-moon"></i></span>
-                            <span id="i18n-p-isha" class="text-xs font-bold text-white">العشاء</span>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <span id="time-Isha" class="text-sm font-sans font-bold text-emerald-100">--:--</span>
-                            <button onclick="togglePrayerNotification('Isha')" id="alert-Isha" class="text-emerald-400/60 hover:text-amber-400 text-sm"><i class="fa-regular fa-bell"></i></button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Custom manual selector fallback -->
-                <div class="bg-emerald-900/20 border border-emerald-800/20 rounded-2xl p-4 text-center space-y-2">
-                    <p id="i18n-prayer-manual-lbl" class="text-[11px] text-emerald-300">أو يمكنك اختيار الدولة والمدينة يدوياً:</p>
-                    <div class="flex gap-2">
-                        <select id="country-select" onchange="loadPresetCity()" class="w-1/2 bg-emerald-950 border border-emerald-800 text-white rounded-xl text-xs p-2.5 font-bold">
-                            <!-- Populated in JS based on Language -->
-                        </select>
-                        <select id="city-select" onchange="fetchPrayerTimesManually()" class="w-1/2 bg-emerald-950 border border-emerald-800 text-white rounded-xl text-xs p-2.5 font-bold">
-                            <!-- Populated Dynamically -->
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-            <!-- SECTION 4: STATISTICS & BADGES -->
-            <div id="page-stats" class="page-transition hidden space-y-5">
-                <h3 id="i18n-stats-title" class="text-base font-bold text-white mb-2">إحصائيات الإنجاز والتسبيح</h3>
-
-                <!-- General Counters Grid -->
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="bg-emerald-900/40 border border-emerald-800/40 rounded-3xl p-4 text-center">
-                        <div class="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center mx-auto mb-2 text-xs">
-                            <i class="fa-solid fa-chart-line"></i>
-                        </div>
-                        <span id="i18n-stats-daily-lbl" class="text-xs text-emerald-300/80 block mb-1">التقدم اليومي</span>
-                        <span id="stats-daily" class="text-2xl font-black text-white font-sans">0</span>
-                    </div>
-                    <div class="bg-emerald-900/40 border border-emerald-800/40 rounded-3xl p-4 text-center">
-                        <div class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center mx-auto mb-2 text-xs">
-                            <i class="fa-solid fa-infinity"></i>
-                        </div>
-                        <span id="i18n-stats-total-lbl" class="text-xs text-emerald-300/80 block mb-1">الإجمالي التراكمي</span>
-                        <span id="stats-total" class="text-2xl font-black text-white font-sans">0</span>
-                    </div>
-                </div>
-
-                <!-- Per-Dhikr Stats -->
-                <div class="space-y-2">
-                    <h4 class="text-xs font-bold text-emerald-200 mb-2">📿 إحصائيات كل ذكر على حدة</h4>
-                    <div id="dhikr-stats-container" class="space-y-2"></div>
-                </div>
-
-                <!-- Progress Goal Targets (Dynamic Bars) -->
-                <div class="bg-emerald-950/80 rounded-3xl p-5 shadow-lg border border-emerald-900/30 space-y-4">
-                    <h4 id="i18n-stats-level-title" class="text-xs font-bold text-emerald-200">مستويات الختمات والتقدم</h4>
-                    
-                    <div class="space-y-3">
-                        <!-- Goal 33 -->
-                        <div class="space-y-1">
-                            <div class="flex justify-between text-[11px] font-bold text-emerald-300">
-                                <span id="i18n-stats-goal-33">ختمة فردية (33 تسبيحة)</span>
-                                <span id="progress-text-33" class="font-sans">0/33</span>
-                            </div>
-                            <div class="h-2.5 w-full bg-emerald-950 rounded-full overflow-hidden border border-emerald-900/40">
-                                <div id="progress-bar-33" class="h-full bg-emerald-500 rounded-full transition-all duration-300" style="width: 0%"></div>
-                            </div>
-                        </div>
-
-                        <!-- Goal 100 -->
-                        <div class="space-y-1">
-                            <div class="flex justify-between text-[11px] font-bold text-emerald-300">
-                                <span id="i18n-stats-goal-100">ختمة مئوية (100 تسبيحة)</span>
-                                <span id="progress-text-100" class="font-sans">0/100</span>
-                            </div>
-                            <div class="h-2.5 w-full bg-emerald-950 rounded-full overflow-hidden border border-emerald-900/40">
-                                <div id="progress-bar-100" class="h-full bg-amber-500 rounded-full transition-all duration-300" style="width: 0%"></div>
-                            </div>
-                        </div>
-
-                        <!-- Goal 1000 -->
-                        <div class="space-y-1">
-                            <div class="flex justify-between text-[11px] font-bold text-emerald-300">
-                                <span id="i18n-stats-goal-1000">ختمة ألفية (1000 تسبيحة)</span>
-                                <span id="progress-text-1000" class="font-sans">0/1000</span>
-                            </div>
-                            <div class="h-2.5 w-full bg-emerald-950 rounded-full overflow-hidden border border-emerald-900/40">
-                                <div id="progress-bar-1000" class="h-full bg-indigo-500 rounded-full transition-all duration-300" style="width: 0%"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- SECTION 5: DUA & QURAN -->
-            <div id="page-dua" class="page-transition hidden space-y-5">
-                
-                <!-- Dynamic Random Dua Card -->
-                <div class="bg-gradient-to-br from-amber-500/15 to-amber-600/5 border border-amber-500/30 rounded-3xl p-5 text-amber-100 relative overflow-hidden shadow-lg space-y-3">
-                    <div class="flex justify-between items-center mb-1">
-                        <span class="text-xs font-bold text-amber-300 flex items-center gap-1.5">
-                            <i class="fa-solid fa-quote-right text-[10px]"></i>
-                            <span id="i18n-dua-header">دعاء للمتوفى (يتغير عشوائياً)</span>
-                        </span>
-                        <!-- Shuffle Button -->
-                        <button onclick="generateRandomDua()" class="w-8 h-8 rounded-full bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 flex items-center justify-center text-xs active:rotate-180 transition-all duration-300" title="تغيير الدعاء">
-                            <i class="fa-solid fa-arrow-rotate-right"></i>
-                        </button>
-                    </div>
-
-                    <!-- Dua Text Space -->
-                    <div class="min-h-[120px] flex flex-col justify-center">
-                        <p id="dua-text" class="text-sm font-semibold text-white leading-relaxed text-right mb-2 transition-all duration-300">
-                            "اللهم اغفر له وارحمه وعافه واعف عنه وأكرم نزله ووسع مدخله واغسله بالماء والثلج والبرد ونقه من الخطايا كما ينقى الثوب الأبيض من الدنس."
-                        </p>
-                        <p id="dua-reference" class="text-[10px] text-amber-300/80 font-sans text-left">
-                            — من الأدعية المأثورة
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Quran Cards -->
-                <div class="space-y-4">
-                    <h4 id="i18n-dua-quran-title" class="text-xs font-bold text-emerald-300 tracking-wider">سورة قصيرة لقراءتها وإهداء ثوابها</h4>
-                    
-                    <!-- Surah Al-Fatihah -->
-                    <div class="bg-white rounded-3xl p-5 shadow-lg border border-slate-100 space-y-3 text-center">
-                        <div class="flex justify-between items-center pb-2 border-b border-slate-100 text-start">
-                            <span id="i18n-surah-fatiha-title" class="text-xs font-bold text-slate-800 font-cairo">سُورَةُ الفَاتِحَةِ</span>
-                            <span id="i18n-surah-fatiha-badge" class="text-[10px] bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded font-bold">سبع آيات</span>
-                        </div>
-                        <p class="text-sm text-slate-800 leading-loose font-serif dir-rtl" dir="rtl">
-                            بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ ﴿١﴾ الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ ﴿٢﴾ الرَّحْمَنِ الرَّحِيمِ ﴿٣﴾ مَالِكِ يَوْمِ الدِّينِ ﴿٤﴾ إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ ﴿٥﴾ اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ ﴿٦﴾ صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ ﴿٧﴾
-                        </p>
-                        <p id="i18n-surah-fatiha-trans" class="text-[10.5px] text-slate-500/90 leading-relaxed italic border-t border-slate-50 pt-2 text-start hidden">
-                            "In the name of Allah, the Entirely Merciful, the Especially Merciful. [All] praise is [due] to Allah, Lord of the worlds. The Entirely Merciful, the Especially Merciful. Sovereign of the Day of Recompense. It is You we worship and You we ask for help..."
-                        </p>
-                    </div>
-
-                    <!-- Surah Al-Ikhlas -->
-                    <div class="bg-white rounded-3xl p-5 shadow-lg border border-slate-100 space-y-3 text-center">
-                        <div class="flex justify-between items-center pb-2 border-b border-slate-100 text-start">
-                            <span id="i18n-surah-ikhlas-title" class="text-xs font-bold text-slate-800 font-cairo">سُورَةُ الإِخْلَاصِ</span>
-                            <span id="i18n-surah-ikhlas-badge" class="text-[10px] bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded font-bold">أربع آيات</span>
-                        </div>
-                        <p class="text-sm text-slate-800 leading-loose font-serif dir-rtl" dir="rtl">
-                            بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ ﴿١﴾ قُلْ هُوَ اللَّهُ أَحَدٌ ﴿٢﴾ اللَّهُ الصَّمَدُ ﴿٣﴾ لَمْ يَلِدْ وَلَمْ يُولَدْ ﴿٤﴾ وَلَمْ يَكُن لَّهُ كُفُوًا أَحَدٌ ﴿٥﴾
-                        </p>
-                        <p id="i18n-surah-ikhlas-trans" class="text-[10.5px] text-slate-500/90 leading-relaxed italic border-t border-slate-50 pt-2 text-start hidden">
-                            "Say, 'He is Allah, [who is] One. Allah, the Eternal Refuge. He neither begets nor is born. Nor is there to Him any equivalent.'"
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-        <!-- APP BOTTOM NAVIGATION BAR (Extremely Modern Custom Icons Style) -->
-        <div class="bg-emerald-950/95 border-t border-emerald-900/60 py-3 px-4 z-10 backdrop-blur-md">
-            <div class="flex justify-between items-center text-xs">
-                <!-- Home Nav -->
-                <button id="nav-home" onclick="switchTab('home')" class="nav-btn active flex flex-col items-center gap-1.5 text-amber-500 transition-all duration-200">
-                    <i class="fa-solid fa-house-chimney text-lg"></i>
-                    <span id="i18n-nav-home" class="text-[9px] font-bold">الرئيسية</span>
-                </button>
-
-                <!-- Tasbeeh Nav -->
-                <button id="nav-tasbeeh" onclick="switchTab('tasbeeh')" class="nav-btn flex flex-col items-center gap-1.5 text-emerald-400/60 hover:text-emerald-300 transition-all duration-200">
-                    <div class="relative">
-                        <i class="fa-solid fa-circle-dot text-lg"></i>
-                        <span id="nav-count-badge" class="hidden absolute -top-1.5 -right-2 bg-amber-500 text-slate-950 text-[8px] font-bold rounded-full w-4 h-4 flex items-center justify-center font-sans scale-90">0</span>
-                    </div>
-                    <span id="i18n-nav-tasbeeh" class="text-[9px] font-bold">المسبحة</span>
-                </button>
-
-                <!-- Prayer Nav -->
-                <button id="nav-prayer" onclick="switchTab('prayer')" class="nav-btn flex flex-col items-center gap-1.5 text-emerald-400/60 hover:text-emerald-300 transition-all duration-200">
-                    <i class="fa-solid fa-mosque text-lg"></i>
-                    <span id="i18n-nav-prayer" class="text-[9px] font-bold">الصلاة</span>
-                </button>
-
-                <!-- Stats Nav -->
-                <button id="nav-stats" onclick="switchTab('stats')" class="nav-btn flex flex-col items-center gap-1.5 text-emerald-400/60 hover:text-emerald-300 transition-all duration-200">
-                    <i class="fa-solid fa-chart-simple text-lg"></i>
-                    <span id="i18n-nav-stats" class="text-[9px] font-bold">الإحصاءات</span>
-                </button>
-
-                <!-- Dua Nav -->
-                <button id="nav-dua" onclick="switchTab('dua')" class="nav-btn flex flex-col items-center gap-1.5 text-emerald-400/60 hover:text-emerald-300 transition-all duration-200">
-                    <i class="fa-solid fa-hands-praying text-lg"></i>
-                    <span id="i18n-nav-dua" class="text-[9px] font-bold">الأدعية</span>
-                </button>
-            </div>
-        </div>
-
     </div>
 
-    <!-- CUSTOM MODAL: RESET CONFIRMATION (Instead of Javascript confirm) -->
-    <div id="reset-confirm-modal" class="hidden fixed inset-0 bg-black/75 z-50 flex justify-center items-center p-4">
-        <div class="bg-emerald-950 border border-emerald-800 rounded-3xl p-6 max-w-sm w-full space-y-4 text-center">
-            <div class="w-12 h-12 rounded-full bg-red-500/10 text-red-500 flex items-center justify-center mx-auto text-xl">
-                <i class="fa-solid fa-triangle-exclamation"></i>
-            </div>
-            <h3 id="i18n-modal-reset-title" class="text-base font-bold text-white">تصفير عداد التسبيح؟</h3>
-            <p id="i18n-modal-reset-desc" class="text-xs text-emerald-200/80 leading-relaxed">هل أنت متأكد من تصفير العداد الحالي؟ لن تتمكن من استرجاع الرقم الحالي بعد المسح.</p>
-            <div class="flex gap-3 pt-2">
-                <button onclick="confirmReset()" id="i18n-modal-reset-ok" class="flex-1 py-2.5 bg-red-500 hover:bg-red-600 active:scale-95 text-white text-xs font-bold rounded-xl transition-all">تصفير العداد</button>
-                <button onclick="closeResetConfirmation()" id="i18n-modal-reset-cancel" class="flex-1 py-2.5 bg-emerald-900/60 border border-emerald-800 text-emerald-100 text-xs font-bold rounded-xl active:scale-95 transition-all">إلغاء</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- CUSTOM MODAL: PRAYER TIME ALERT (Adhan Notification) -->
-    <div id="prayer-alert-modal" class="hidden fixed inset-0 bg-black/85 z-50 flex justify-center items-center p-4">
-        <div class="bg-gradient-to-b from-emerald-900 to-emerald-950 border border-amber-500/40 rounded-3xl p-6 max-w-sm w-full space-y-5 text-center relative overflow-hidden">
-            <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(212,175,55,0.05)_0%,transparent_70%)]"></div>
-            <div class="w-16 h-16 rounded-full bg-amber-500/10 text-amber-400 flex items-center justify-center mx-auto text-3xl border border-amber-500/20 animate-pulse">
-                <i class="fa-solid fa-mosque"></i>
-            </div>
-            <div class="space-y-1 relative z-10">
-                <span id="i18n-modal-p-alert" class="text-[10px] text-amber-400 font-bold uppercase tracking-widest block">حان الآن موعد أذان</span>
-                <h3 id="alert-prayer-name" class="text-2xl font-black text-white">صلاة الظهر</h3>
-                <p id="i18n-modal-p-city" class="text-xs text-emerald-200/80">حسب التوقيت المحلي لمدينتك</p>
-            </div>
-            <p class="text-xs text-amber-300/90 font-semibold leading-relaxed relative z-10">"إِنَّ الصَّلَاةَ كَانَتْ عَلَى الْمُؤْمِنِينَ كِتَابًا مَّوْقُوتًا"</p>
-            <button onclick="dismissPrayerAlert()" id="i18n-modal-p-ok" class="w-full py-3 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 text-xs font-bold rounded-xl shadow-lg active:scale-95 transition-all relative z-10">تقبل الله (أغلق التنبيه)</button>
-        </div>
-    </div>
-
-    <!-- TOAST MESSAGE SYSTEM -->
-    <div id="toast-message" class="opacity-0 translate-y-4 pointer-events-none fixed bottom-6 left-1/2 -translate-x-1/2 bg-emerald-900/90 border border-emerald-700/80 text-white text-xs py-2.5 px-4 rounded-xl shadow-xl transition-all duration-300 z-50 flex items-center gap-2">
-        <i class="fa-solid fa-circle-info text-amber-400"></i>
-        <span id="toast-text">تم نسخ التنبيه</span>
-    </div>
+    <audio id="click-sound" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-84.wav" preload="auto"></audio>
 
     <script>
-        const dhikrList = [
-            { ar: 'سبحان الله',       en: "Subhan'Allah",          key: 'subhanallah',    meaningAr: 'سبحان الله وبحمده سبحان الله العظيم',          meaningEn: 'Glory be to Allah' },
-            { ar: 'الحمد لله',        en: 'Alhamdulillah',         key: 'alhamdulillah',  meaningAr: 'الحمد لله رب العالمين',                          meaningEn: 'Praise be to Allah' },
-            { ar: 'الله أكبر',        en: 'Allahu Akbar',          key: 'allahuakbar',    meaningAr: 'الله أكبر كبيراً والحمد لله كثيراً',             meaningEn: 'Allah is the Greatest' },
-            { ar: 'لا إله إلا الله',  en: 'La ilaha illa Allah',   key: 'lailaha',        meaningAr: 'لا إله إلا الله وحده لا شريك له',               meaningEn: 'There is no god but Allah' },
-            { ar: 'أستغفر الله',      en: 'Astaghfirullah',        key: 'astaghfirullah', meaningAr: 'أستغفر الله العظيم وأتوب إليه',                  meaningEn: 'I seek forgiveness from Allah' },
-            { ar: 'الصلاة على النبي', en: 'Salawat',               key: 'salawat',        meaningAr: 'اللهم صلِّ وسلِّم على نبينا محمد ﷺ',            meaningEn: 'O Allah, send peace & blessings upon our Prophet Muhammad ﷺ' },
-        ];
-
-        // App State
-        let currentLang = 'ar';
-        let activeDhikr = 'سبحان الله';
-        let hapticEnabled = true;
-        let soundEnabled = true;
-
-        // Per-dhikr counts (persistent)
-        const DHIKR_KEYS = ['subhanallah','alhamdulillah','allahuakbar','lailaha','astaghfirullah','salawat'];
-        function loadDhikrCounts() {
-            const saved = localStorage.getItem('alNoor_dhikrCounts');
-            if (saved) return JSON.parse(saved);
-            return Object.fromEntries(DHIKR_KEYS.map(k => [k, 0]));
-        }
-        function saveDhikrCounts() {
-            localStorage.setItem('alNoor_dhikrCounts', JSON.stringify(dhikrCounts));
-        }
-        let dhikrCounts = loadDhikrCounts();
-
-        // Legacy compat — derived from per-dhikr counts
-        function getTotalCount()  { return DHIKR_KEYS.reduce((s,k) => s + (dhikrCounts[k]||0), 0); }
-        function getDailyCount()  { return parseInt(localStorage.getItem('alNoor_dailyCount')) || 0; }
-        function getActiveCount() { const d = dhikrList.find(x => x.ar === activeDhikr); return d ? (dhikrCounts[d.key]||0) : 0; }
-        
-        // Prayer Times state
-        let prayerTimings = {};
-        let nextPrayerName = '';
-        let nextPrayerTimeStr = '';
-        let timerInterval = null;
-        let userLatitude = null;
-        let userLongitude = null;
-        let selectedCity = 'Dubai';
-        let selectedCountry = 'AE';
-        
-        // Prayer Alert State (Which prayers to notify for - saved in localStorage)
-        let prayerAlerts = {
-            Fajr: true,
-            Dhuhr: true,
-            Asr: true,
-            Maghrib: true,
-            Isha: true
-        };
-
-        const presetCities = {
-            SA: [
-                { name: 'Mecca', ar: 'مكة المكرمة' },
-                { name: 'Medina', ar: 'المدينة المنورة' },
-                { name: 'Riyadh', ar: 'الرياض' }
+        // DATA MODEL & STATE
+        const dhikrData = {
+            ar: [
+                { id: 'subhan', text: 'سُبْحَانَ اللَّهِ', description: 'من قالها مئة مرة كتبت له ألف حسنة أو حطت عنه ألف خطيئة.', limit: 33 },
+                { id: 'alhamd', text: 'الْحَمْدُ لِلَّهِ', description: 'تملأ الميزان، وهي أفضل الدعاء وأحب الكلام إلى الله.', limit: 33 },
+                { id: 'allahu', text: 'اللَّهُ أَكْبَرُ', description: 'تملأ ما بين السماء والأرض، وهي عظم إجلال الخالق.', limit: 34 },
+                { id: 'istighfar', text: 'أَسْتَغْفِرُ اللَّهَ', description: 'مفتاح الرزق، والفرج، ومحو الذنوب والخطايا.', limit: 100 },
+                { id: 'salawat', text: 'اللَّهُمَّ صَلِّ وَسَلِّمْ عَلَى نَبِيِّنَا مُحَمَّدٍ', description: 'من صلى عليه صلاة صلى الله عليه بها عشراً.', limit: 100 },
+                { id: 'tawheed', text: 'لَا إِلَٰهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ', description: 'تعدل عتق رقاب، وتكتب مئة حسنة، وتمحو مئة سيئة.', limit: 100 }
             ],
-            AE: [
-                { name: 'Dubai', ar: 'دبي' },
-                { name: 'Abu Dhabi', ar: 'أبوظبي' },
-                { name: 'Sharjah', ar: 'الشارقة' }
-            ],
-            EG: [
-                { name: 'Cairo', ar: 'القاهرة' },
-                { name: 'Alexandria', ar: 'الإسكندرية' }
-            ],
-            JO: [
-                { name: 'Amman', ar: 'عمان' }
-            ],
-            KW: [
-                { name: 'Kuwait City', ar: 'الكويت' }
+            en: [
+                { id: 'subhan', text: 'Subhan Allah', description: 'Glory be to Allah. Repeated 100 times, 1000 rewards are earned.', limit: 33 },
+                { id: 'alhamd', text: 'Alhamdulillah', description: 'Praise be to Allah. It fills the scales of good deeds.', limit: 33 },
+                { id: 'allahu', text: 'Allahu Akbar', description: 'Allah is the Greatest. Exalting His supreme majesty.', limit: 34 },
+                { id: 'istighfar', text: 'Astaghfirullah', description: 'I seek Allah\'s forgiveness. The key to relief and sustenance.', limit: 100 },
+                { id: 'salawat', text: 'Allahumma Salli ala Muhammad', description: 'O Allah, send blessings upon Muhammad. Elevenfold mercy returned.', limit: 100 },
+                { id: 'tawheed', text: 'La ilaha illa Allah', description: 'None has the right to be worshipped except Allah alone.', limit: 100 }
             ]
         };
 
-        const presetCountriesAr = [
-            { code: 'SA', name: 'السعودية' },
-            { code: 'AE', name: 'الإمارات' },
-            { code: 'EG', name: 'مصر' },
-            { code: 'JO', name: 'الأردن' },
-            { code: 'KW', name: 'الكويت' }
-        ];
-
-        const presetCountriesEn = [
-            { code: 'SA', name: 'Saudi Arabia' },
-            { code: 'AE', name: 'United Arab Emirates' },
-            { code: 'EG', name: 'Egypt' },
-            { code: 'JO', name: 'Jordan' },
-            { code: 'KW', name: 'Kuwait' }
-        ];
-
-        const prayerNamesAr = {
-            Fajr: 'الفجر',
-            Sunrise: 'الشروق',
-            Dhuhr: 'الظهر',
-            Asr: 'العصر',
-            Maghrib: 'المغرب',
-            Isha: 'العشاء'
-        };
-
-        const prayerNamesEn = {
-            Fajr: 'Fajr',
-            Sunrise: 'Sunrise',
-            Dhuhr: 'Dhuhr',
-            Asr: 'Asr',
-            Maghrib: 'Maghrib',
-            Isha: 'Isha'
-        };
-
-        const deceasedDuas = [
-            {
-                textAr: "اللهم اغفر له وارحمه وعافه واعف عنه وأكرم نزله ووسع مدخله واغسله بالماء والثلج والبرد ونقه من الخطايا كما ينقى الثوب الأبيض من الدنس.",
-                textEn: "O Allah, forgive him and have mercy on him, keep him safe and sound and forgive him, honor his reception, widen his entry, and wash him with water, snow, and hail.",
-                refAr: "صحيح مسلم",
-                refEn: "Sahih Muslim"
-            },
-            {
-                textAr: "اللهم اجعل قبره روضة من رياض الجنة ولا تجعله حفرة من حفر النيران، وافسح له في قبره مد بصره وافرش قبره من فراش الجنة.",
-                textEn: "O Allah, make his grave a garden from the gardens of Paradise and do not make it a pit of Hellfire. Expand his grave and spread for him from the beds of Paradise.",
-                refAr: "دعاء مأثور",
-                refEn: "Traditional Supplication"
-            },
-            {
-                textAr: "اللهم إن كان محسناً فزد في حسناته، وإن كان مسيئاً فتجاوز عن سيئاته، اللهم أدخله الجنة من غير مناقشة حساب ولا سابقة عذاب.",
-                textEn: "O Allah, if he was a doer of good, then increase his good deeds, and if he was an evildoer, then overlook his misdeeds. Enter him into Paradise without reckoning.",
-                refAr: "من أدعية الجنائز",
-                refEn: "Funeral Supplication"
-            },
-            {
-                textAr: "اللهم يمّن كتابه، ويسّر حسابه، وثقّل بالحسنات ميزانه، وثبّت على الصراط أقدامه، وأسكنه في أعلى الجنات بجوار حبيبك ومصطفاك ﷺ.",
-                textEn: "O Allah, make his book easy, ease his reckoning, weigh down his scale with good deeds, make his feet firm on the Path, and lodge him in the highest Paradise.",
-                refAr: "دعاء للمتوفى",
-                refEn: "Supplication for Deceased"
-            }
-        ];
-
-
-
-        // Language Translation Dictionary
-        const i18nDict = {
+        const uiText = {
             ar: {
-                headerTag: '<i class="fa-solid fa-heart text-[8px] mx-1"></i> صدقة جارية',
-                headerDedicated: "عن روح المغفور له بإذن الله تعالى",
-                headerUncle: localStorage.getItem('alNoor_deceasedName') || 'جدي',
-                homeWelcome: "تقبل الله طاعتكم ✨",
-                homeSub: "أهلاً بك في رحلتك الروحانية اليومية للتسبيح ومتابعة الصلاة.",
-                homeDailyLbl: "تسبيحات اليوم",
-                homeTotalLbl: "الإجمالي العام",
-                homeNextPrayerTag: "الأذان القادم",
-                homeTargetTitle: "هدف الختمة اليومي",
-                homeTargetBadge: "المستهدف: 100",
-                homeTargetHeadline: "اقتربت من تحقيق هدفك اليومي!",
-                homeTargetDesc: "كل تسبيحة ترفع درجات، وتُثقل ميزان الحسنات كصدقة جارية.",
-                homeBtn: "ابدأ العداد التفاعلي الآن",
-                tasbeehTapLbl: "اضغط للتسبيح",
-                tasbeehResetBtn: "تصفير",
-                prayerTitle: "مواقيت الصلاة والتنبيهات",
-                prayerNotiBtn: "تفعيل الإشعارات",
-                prayerRefreshBtn: "تحديث",
-                prayerHeroTag: "الصلاة القادمة",
-                prayerHeroRem: "الوقت المتبقي للأذان",
-                prayerManualLbl: "أو يمكنك اختيار الدولة والمدينة يدوياً:",
-                p_fajr: "الفجر",
-                p_sunrise: "الشروق",
-                p_dhuhr: "الظهر",
-                p_asr: "العصر",
-                p_maghrib: "المغرب",
-                p_isha: "العشاء",
-                statsTitle: "إحصائيات الإنجاز والتسبيح",
-                statsDailyLbl: "التقدم اليومي",
-                statsTotalLbl: "الإجمالي التراكمي",
-                statsLevelTitle: "مستويات الختمات والتقدم",
-                statsGoal33: "ختمة فردية (33 تسبيحة)",
-                statsGoal100: "ختمة مئوية (100 تسبيحة)",
-                statsGoal1000: "ختمة ألفية (1000 تسبيحة)",
-                duaHeader: "دعاء للمتوفى (يتغير عشوائياً)",
-                duaQuranTitle: "سورة قصيرة لقراءتها وإهداء ثوابها",
-                surahFatihaTitle: "سُورَةُ الفَاتِحَةِ",
-                surahFatihaBadge: "سبع آيات",
-                surahIkhlasTitle: "سُورَةُ الإِخْلَاصِ",
-                surahIkhlasBadge: "أربع آيات",
-                navHome: "الرئيسية",
-                navTasbeeh: "المسبحة",
-                navPrayer: "الصلاة",
-                navStats: "الإحصاءات",
-                navDua: "الأدعية",
-                modalResetTitle: "تصفير عداد التسبيح؟",
-                modalResetDesc: "هل أنت متأكد من تصفير العداد الحالي؟ لن تتمكن من استرجاع الرقم الحالي بعد المسح.",
-                modalResetOk: "تصفير العداد",
-                modalResetCancel: "إلغاء",
-                modalPAlert: "حان الآن موعد أذان",
-                modalPCity: "حسب التوقيت المحلي لمدينتك",
-                modalPOk: "تقبل الله (أغلق التنبيه)",
-                locFinding: "تحديد موقعك تلقائياً...",
-                locDefault: "موقع افتراضي (الشرق الأوسط)",
-                locCustom: "يدوي",
-                locActive: "موقعك الحالي (مُفعّل تلقائياً)",
-                errLocation: "حدث خطأ في تحميل مواقيت الصلاة",
-                errManual: "عفواً، تعذر جلب التوقيت يدوياً.",
-                toastReset: "تم تصفير العداد لليوم الجديد",
-                toastHapticOn: "تم تفعيل الاهتزاز عند التسبيح",
-                toastHapticOff: "تم إيقاف الاهتزاز",
-                toastSoundOn: "تم تفعيل الصوت",
-                toastSoundOff: "تم كتم الصوت",
-                toastNotiGranted: "تم تفعيل الإشعارات الرسمية بنجاح",
-                toastNotiDenied: "تم رفض الأذن لإشعارات النظام",
-                toastNotiUnsuited: "متصفحك الحالي لا يدعم التنبيهات المباشرة",
-                toastPrayerTimesUpdated: "تم تحديث مواقيت الصلاة بنجاح",
-                toastAlertEnabledFor: "تم تفعيل تنبيه صلاة",
-                toastAlertDisabledFor: "تم إيقاف تنبيه صلاة",
-                adhanTextBody: "حي على الصلاة.. حي على الفلاح.. جعلها الله في ميزان حسناتك.",
-                nextPrayerCalc: "جاري الحساب...",
-                nextPrayerRem: "متبقي"
+                title: 'تقبل الله طاعتكم ✨',
+                subtitle: 'أهلاً بك في رحلتك الروحانية اليومية للتسبيح ومتابعة الصلاة.',
+                today: 'تسبيحات اليوم',
+                total: 'الإجمالي العام',
+                nextPrayer: 'الأذان القادم',
+                tabDhikr: 'الأذكار والتسبيح',
+                tabGoals: 'أهداف الختمة',
+                btnReset: 'تصفير العداد',
+                btnTapReady: 'اضغط للتسبيح الآن',
+                motivation: 'اقتربت من تحقيق هدفك اليومي!',
+                hint: 'كل تسبيحة ترفع درجات، وتثقل ميزان الحسنات كصدقة جارية.'
             },
             en: {
-                headerTag: '<i class="fa-solid fa-heart text-[8px] mx-1"></i> Sadaqah Jariyah',
-                headerDedicated: "In loving remembrance of our beloved",
-                headerUncle: localStorage.getItem('alNoor_deceasedName') || 'Dearest Uncle',
-                homeWelcome: "May Allah Accept Your Deeds ✨",
-                homeSub: "Welcome to your daily spiritual journey of Tasbeeh and Prayer tracking.",
-                homeDailyLbl: "Today's Tasbeeh",
-                homeTotalLbl: "Cumulative Total",
-                homeNextPrayerTag: "Next Prayer Adhan",
-                homeTargetTitle: "Daily Khatm Goal",
-                homeTargetBadge: "Target: 100",
-                homeTargetHeadline: "You are close to reaching your daily goal!",
-                homeTargetDesc: "Each Tasbeeh elevates your status and weighs down good deeds in the scales.",
-                homeBtn: "Start Interactive Tasbeeh Now",
-                tasbeehTapLbl: "Tap to Count",
-                tasbeehResetBtn: "Reset",
-                prayerTitle: "Prayer Times & Notifications",
-                prayerNotiBtn: "Enable Alerts",
-                prayerRefreshBtn: "Refresh",
-                prayerHeroTag: "Upcoming Prayer",
-                prayerHeroRem: "Remaining until Adhan",
-                prayerManualLbl: "Or manually select country and city:",
-                p_fajr: "Fajr",
-                p_sunrise: "Sunrise",
-                p_dhuhr: "Dhuhr",
-                p_asr: "Asr",
-                p_maghrib: "Maghrib",
-                p_isha: "Isha",
-                statsTitle: "Praise & Achievement Statistics",
-                statsDailyLbl: "Daily Progress",
-                statsTotalLbl: "Cumulative Total",
-                statsLevelTitle: "Seal Milestone Progress",
-                statsGoal33: "Single Khatm (33 Recitations)",
-                statsGoal100: "Hundred Khatm (100 Recitations)",
-                statsGoal1000: "Thousand Khatm (1000 Recitations)",
-                duaHeader: "Prayer for the Deceased (Updates Randomly)",
-                duaQuranTitle: "Read & Dedicate Reward of Short Surahs",
-                surahFatihaTitle: "Surah Al-Fatihah",
-                surahFatihaBadge: "7 Verses",
-                surahIkhlasTitle: "Surah Al-Ikhlas",
-                surahIkhlasBadge: "4 Verses",
-                navHome: "Home",
-                navTasbeeh: "Counter",
-                navPrayer: "Prayers",
-                navStats: "Statistics",
-                navDua: "Prayers & Quran",
-                modalResetTitle: "Reset Tasbeeh Counter?",
-                modalResetDesc: "Are you sure you want to reset the current counter? You won't be able to recover your count.",
-                modalResetOk: "Reset Counter",
-                modalResetCancel: "Cancel",
-                modalPAlert: "Adhan Time Has Arrived",
-                modalPCity: "According to your local city timing",
-                modalPOk: "May Allah Accept (Dismiss)",
-                locFinding: "Locating your position...",
-                locDefault: "Default Location (Middle East)",
-                locCustom: "Manual",
-                locActive: "Current Location (Auto-detected)",
-                errLocation: "Failed to load online prayer times.",
-                errManual: "Sorry, failed to fetch times manually.",
-                toastReset: "Counter has been reset for the day",
-                toastHapticOn: "Vibration feedback activated",
-                toastHapticOff: "Vibration feedback deactivated",
-                toastSoundOn: "Sound chime activated",
-                toastSoundOff: "Sound muted",
-                toastNotiGranted: "Official notifications enabled successfully",
-                toastNotiDenied: "System notification permission denied",
-                toastNotiUnsuited: "Your current browser does not support web notifications",
-                toastPrayerTimesUpdated: "Prayer times updated successfully",
-                toastAlertEnabledFor: "Alert enabled for",
-                toastAlertDisabledFor: "Alert disabled for",
-                adhanTextBody: "Hurry to prayer.. Hurry to success.. May Allah put it in your scale of rewards.",
-                nextPrayerCalc: "Calculating...",
-                nextPrayerRem: "Remaining"
+                title: 'May Allah Accept ✨',
+                subtitle: 'Welcome to your daily spiritual journey of Dhikr and prayer tracking.',
+                today: 'Today\'s Dhikr',
+                total: 'Lifetime Total',
+                nextPrayer: 'Next Prayer',
+                tabDhikr: 'Dhikr & Tasbih',
+                tabGoals: 'Khatma Goals',
+                btnReset: 'Reset Counter',
+                btnTapReady: 'Tap to Count Dhikr',
+                motivation: 'You are close to your goal!',
+                hint: 'Every Tasbih elevates your degrees and heavies your balance.'
             }
         };
 
-        window.addEventListener('DOMContentLoaded', () => {
-            // Load saved state from LocalStorage
-            currentLang = localStorage.getItem('alNoor_lang') || 'ar';
-            dhikrCounts = loadDhikrCounts();
-            
-            // Load custom notification configuration
-            const savedAlerts = localStorage.getItem('alNoor_prayerAlerts');
-            if (savedAlerts) {
-                prayerAlerts = JSON.parse(savedAlerts);
-            }
-            
-            // Apply language
-            // Load saved deceased name into i18nDict
-            const _savedName = localStorage.getItem('alNoor_deceasedName');
-            if (_savedName) {
-                i18nDict.ar.headerUncle = _savedName;
-                i18nDict.en.headerUncle = _savedName;
-            }
-            applyLanguage(currentLang);
-            
-            updateUI();
-            generateRandomDua();
-            
-            // Clock removed (no simulator bar)
+        const prayerTimes = [
+            { nameAr: 'صلاة الفجر', nameEn: 'Fajr Prayer', time: '04:02', icon: 'fa-cloud-moon' },
+            { nameAr: 'شروق الشمس', nameEn: 'Sunrise', time: '05:28', icon: 'fa-sun' },
+            { nameAr: 'صلاة الظهر', nameEn: 'Dhuhr Prayer', time: '12:19', icon: 'fa-cloud-sun' },
+            { nameAr: 'صلاة العصر', nameEn: 'Asr Prayer', time: '15:43', icon: 'fa-cloud-sun-open' },
+            { nameAr: 'صلاة المغرب', nameEn: 'Maghrib Prayer', time: '19:08', icon: 'fa-cloud-sunset' },
+            { nameAr: 'صلاة العشاء', nameEn: 'Isha Prayer', time: '20:34', icon: 'fa-moon' }
+        ];
 
-            // Get user's location and fetch times
-            getUserLocation();
+        let currentLang = localStorage.getItem('alNoorLang') || 'ar';
+        let currentTab = 'dhikr';
+        let selectedDhikrId = 'subhan';
+
+        let stats = JSON.parse(localStorage.getItem('alNoorStats_v2')) || {
+            total: 0,
+            today: 0,
+            lastResetDate: new Date().toDateString(),
+            counts: { subhan: 0, alhamd: 0, allahu: 0, istighfar: 0, salawat: 0, tawheed: 0 }
+        };
+
+        let soundEnabled = JSON.parse(localStorage.getItem('alNoorSound')) !== false;
+
+        // INITS
+        document.addEventListener('DOMContentLoaded', () => {
+            checkDateReset();
+            applyLanguageUI();
+            renderTabContent();
+            startPrayerClock();
+            setupCounterMechanic();
         });
 
-        // Toggle Language State
-        function toggleLanguage() {
-            currentLang = (currentLang === 'ar') ? 'en' : 'ar';
-            localStorage.setItem('alNoor_lang', currentLang);
-            // Load saved deceased name into i18nDict
-            const _savedName = localStorage.getItem('alNoor_deceasedName');
-            if (_savedName) {
-                i18nDict.ar.headerUncle = _savedName;
-                i18nDict.en.headerUncle = _savedName;
+        function checkDateReset() {
+            const todayStr = new Date().toDateString();
+            if (stats.lastResetDate !== todayStr) {
+                stats.today = 0;
+                stats.lastResetDate = todayStr;
+                saveStats();
             }
-            applyLanguage(currentLang);
-            
-            // Generate bilingual dhikrs & reload presets
-            generateRandomDua();
-            showToast(currentLang === 'ar' ? 'تم تحويل التطبيق للغة العربية' : 'App language changed to English');
         }
 
-        // Apply Language Pack
-        function applyLanguage(lang) {
-            const pack = i18nDict[lang];
-            const isAr = (lang === 'ar');
+        function saveStats() {
+            localStorage.setItem('alNoorStats_v2', JSON.stringify(stats));
+            document.getElementById('today-count-display').innerText = stats.today.toLocaleString();
+            document.getElementById('total-count-display').innerText = stats.total.toLocaleString();
+        }
+
+        // NAVIGATION & TABS
+        function switchTab(tab) {
+            currentTab = tab;
+            const tDhikr = document.getElementById('tab-dhikr');
+            const tGoals = document.getElementById('tab-goals');
             
-            // Toggle HTML and Container Directions
-            const frame = document.getElementById('app-frame');
-            frame.setAttribute('dir', isAr ? 'rtl' : 'ltr');
-            
-            // Update button texts
-            document.getElementById('lang-btn-text').innerText = isAr ? 'English' : 'العربية';
-            
-            // Header Elements
-            document.getElementById('i18n-header-tag').innerHTML = pack.headerTag;
-            document.getElementById('i18n-header-dedicated').innerText = pack.headerDedicated;
-            document.getElementById('i18n-header-uncle').innerText = pack.headerUncle;
-            
-            // Home Tab
-            document.getElementById('i18n-home-welcome').innerText = pack.homeWelcome;
-            document.getElementById('i18n-home-sub').innerText = pack.homeSub;
-            document.getElementById('i18n-home-daily-lbl').innerText = pack.homeDailyLbl;
-            document.getElementById('i18n-home-total-lbl').innerText = pack.homeTotalLbl;
-            document.getElementById('i18n-home-next-prayer-tag').innerText = pack.homeNextPrayerTag;
-            document.getElementById('i18n-home-target-title').innerText = pack.homeTargetTitle;
-            document.getElementById('i18n-home-target-badge').innerText = pack.homeTargetBadge;
-            document.getElementById('i18n-home-target-headline').innerText = pack.homeTargetHeadline;
-            document.getElementById('i18n-home-target-desc').innerText = pack.homeTargetDesc;
-            document.getElementById('i18n-home-btn').innerText = pack.homeBtn;
-            
-            // Tasbeeh Tab
-            document.getElementById('i18n-tasbeeh-tap-lbl').innerText = pack.tasbeehTapLbl;
-            document.getElementById('i18n-tasbeeh-reset-btn').innerText = pack.tasbeehResetBtn;
-            
-            // Prayer Tab
-            document.getElementById('i18n-prayer-title').innerText = pack.prayerTitle;
-            document.getElementById('i18n-prayer-noti-btn').innerText = pack.prayerNotiBtn;
-            document.getElementById('i18n-prayer-refresh-btn').innerText = pack.prayerRefreshBtn;
-            document.getElementById('i18n-prayer-hero-tag').innerText = pack.prayerHeroTag;
-            document.getElementById('i18n-prayer-hero-rem').innerText = pack.prayerHeroRem;
-            document.getElementById('i18n-prayer-manual-lbl').innerText = pack.prayerManualLbl;
-            document.getElementById('i18n-p-fajr').innerText = pack.p_fajr;
-            document.getElementById('i18n-p-sunrise').innerText = pack.p_sunrise;
-            document.getElementById('i18n-p-dhuhr').innerText = pack.p_dhuhr;
-            document.getElementById('i18n-p-asr').innerText = pack.p_asr;
-            document.getElementById('i18n-p-maghrib').innerText = pack.p_maghrib;
-            document.getElementById('i18n-p-isha').innerText = pack.p_isha;
-            
-            // Stats Tab
-            document.getElementById('i18n-stats-title').innerText = pack.statsTitle;
-            document.getElementById('i18n-stats-daily-lbl').innerText = pack.statsDailyLbl;
-            document.getElementById('i18n-stats-total-lbl').innerText = pack.statsTotalLbl;
-            document.getElementById('i18n-stats-level-title').innerText = pack.statsLevelTitle;
-            document.getElementById('i18n-stats-goal-33').innerText = pack.statsGoal33;
-            document.getElementById('i18n-stats-goal-100').innerText = pack.statsGoal100;
-            document.getElementById('i18n-stats-goal-1000').innerText = pack.statsGoal1000;
-            
-            // Dua Tab
-            document.getElementById('i18n-dua-header').innerText = pack.duaHeader;
-            document.getElementById('i18n-dua-quran-title').innerText = pack.duaQuranTitle;
-            document.getElementById('i18n-surah-fatiha-title').innerText = pack.surahFatihaTitle;
-            document.getElementById('i18n-surah-fatiha-badge').innerText = pack.surahFatihaBadge;
-            document.getElementById('i18n-surah-ikhlas-title').innerText = pack.surahIkhlasTitle;
-            document.getElementById('i18n-surah-ikhlas-badge').innerText = pack.surahIkhlasBadge;
-            
-            // English translations of Surahs (Show only on English mode)
-            const fatihaTrans = document.getElementById('i18n-surah-fatiha-trans');
-            const ikhlasTrans = document.getElementById('i18n-surah-ikhlas-trans');
-            if (isAr) {
-                fatihaTrans.classList.add('hidden');
-                ikhlasTrans.classList.add('hidden');
+            if (tab === 'dhikr') {
+                tDhikr.className = "py-2 px-3 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2 bg-emerald-900 text-white shadow-sm";
+                tGoals.className = "py-2 px-3 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2 text-emerald-400/60 hover:text-emerald-300";
             } else {
-                fatihaTrans.classList.remove('hidden');
-                ikhlasTrans.classList.remove('hidden');
+                tGoals.className = "py-2 px-3 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2 bg-emerald-900 text-white shadow-sm";
+                tDhikr.className = "py-2 px-3 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2 text-emerald-400/60 hover:text-emerald-300";
             }
-
-            // Bottom Navigation
-            document.getElementById('i18n-nav-home').innerText = pack.navHome;
-            document.getElementById('i18n-nav-tasbeeh').innerText = pack.navTasbeeh;
-            document.getElementById('i18n-nav-prayer').innerText = pack.navPrayer;
-            document.getElementById('i18n-nav-stats').innerText = pack.navStats;
-            document.getElementById('i18n-nav-dua').innerText = pack.navDua;
-            
-            // Modals
-            document.getElementById('i18n-modal-reset-title').innerText = pack.modalResetTitle;
-            document.getElementById('i18n-modal-reset-desc').innerText = pack.modalResetDesc;
-            document.getElementById('i18n-modal-reset-ok').innerText = pack.modalResetOk;
-            document.getElementById('i18n-modal-reset-cancel').innerText = pack.modalResetCancel;
-            document.getElementById('i18n-modal-p-alert').innerText = pack.modalPAlert;
-            document.getElementById('i18n-modal-p-city').innerText = pack.modalPCity;
-            document.getElementById('i18n-modal-p-ok').innerText = pack.modalPOk;
-
-            // Rebuild the dynamic Dhikr selector
-            rebuildDhikrTabs();
-            // Re-populate Manual Selection Dropdowns
-            populateManualCountries();
+            renderTabContent();
         }
 
-        // Dynamic Rebuild of Dhikr Selectors
-        function rebuildDhikrTabs() {
-            const container = document.getElementById('dhikr-container');
-            container.innerHTML = '';
-
-            dhikrList.forEach((dhikr) => {
-                const label = (currentLang === 'ar') ? dhikr.ar : dhikr.en;
-                const isActive = activeDhikr === dhikr.ar;
-                const count = dhikrCounts[dhikr.key] || 0;
-                const activeClass = isActive
-                    ? 'bg-amber-500 text-slate-950 border-amber-400'
-                    : 'bg-emerald-900/40 text-emerald-100 border-emerald-800/40';
-
-                const btn = document.createElement('button');
-                btn.className = `dhikr-tab-btn flex-shrink-0 flex flex-col items-center px-4 py-2 rounded-2xl border whitespace-nowrap transition-all active:scale-95 ${activeClass}`;
-                btn.onclick = () => selectDhikr(dhikr.ar);
-                btn.innerHTML = `
-                    <span class="text-xs font-bold leading-tight">${label}</span>
-                    <span class="text-[10px] font-sans mt-0.5 ${isActive ? 'text-slate-800' : 'text-emerald-400'}">${count.toLocaleString()}</span>`;
-                container.appendChild(btn);
-            });
-
-            // scroll active chip into view
-            const activeBtn = container.querySelector('.bg-amber-500');
-            if (activeBtn) activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-
-            // Update meaning card text
-            const selected = dhikrList.find(d => d.ar === activeDhikr) || dhikrList[0];
-            document.getElementById('current-dhikr-text').innerText = (currentLang === 'ar') ? selected.ar : selected.en;
-            document.getElementById('dhikr-meaning').innerText = (currentLang === 'ar') ? selected.meaningAr : selected.meaningEn;
+        function selectDhikrCard(id) {
+            selectedDhikrId = id;
+            renderTabContent();
+            updateMainButtonLabel();
         }
 
-        // Toggle Views/Tabs
-        function switchTab(targetId) {
-            // Hide all pages
-            ['home', 'tasbeeh', 'prayer', 'stats', 'dua'].forEach(id => {
-                document.getElementById(`page-${id}`).classList.add('hidden');
-            });
-            // Show active page
-            document.getElementById(`page-${targetId}`).classList.remove('hidden');
-
-            // Update Navigation Menu Active Class
-            const navButtons = document.querySelectorAll('.nav-btn');
-            navButtons.forEach(btn => {
-                btn.classList.remove('text-amber-500');
-                btn.classList.add('text-emerald-400/60');
-            });
-
-            // Mark active nav
-            const targetNav = document.getElementById(`nav-${targetId}`);
-            if (targetNav) {
-                targetNav.classList.remove('text-emerald-400/60');
-                targetNav.classList.add('text-amber-500');
+        function updateMainButtonLabel() {
+            const list = dhikrData[currentLang];
+            const item = list.find(d => d.id === selectedDhikrId);
+            const btnSpan = document.getElementById('btn-main-tap');
+            if (btnSpan && item) {
+                btnSpan.innerText = item.text;
             }
         }
 
-        // Custom Toast System
-        function showToast(message) {
-            const toast = document.getElementById('toast-message');
-            const toastText = document.getElementById('toast-text');
-            toastText.innerText = message;
-            
-            toast.classList.remove('opacity-0', 'translate-y-4', 'pointer-events-none');
-            toast.classList.add('opacity-100', 'translate-y-0');
-            
-            setTimeout(() => {
-                toast.classList.remove('opacity-100', 'translate-y-0');
-                toast.classList.add('opacity-0', 'translate-y-4', 'pointer-events-none');
-            }, 3000);
+        // RENDER FUNCTIONS
+        function renderTabContent() {
+            const container = document.getElementById('tab-content');
+            if (!container) return;
+
+            const list = dhikrData[currentLang];
+
+            if (currentTab === 'dhikr') {
+                container.innerHTML = list.map(item => {
+                    const isSelected = item.id === selectedDhikrId;
+                    const count = stats.counts[item.id] || 0;
+                    const borderStyle = isSelected ? 'border-amber-400 bg-emerald-900/40 shadow-md' : 'border-emerald-900/40 bg-emerald-950/40';
+                    const badgeStyle  = isSelected ? 'bg-amber-400 text-emerald-950 font-black' : 'bg-emerald-900 text-emerald-400 font-bold';
+
+                    return `<div onclick="selectDhikrCard('${item.id}')" class="page-transition border rounded-2xl p-4 cursor-pointer flex justify-between items-center gap-4 ${borderStyle}">`
+                         + `<div class="space-y-1 flex-1">`
+                         + `<h3 class="text-base font-extrabold text-white">${item.text}</h3>`
+                         + `<p class="text-[11px] text-emerald-300/60 leading-normal max-w-[250px]">${item.description}</p>`
+                         + `</div>`
+                         + `<div class="w-12 h-12 rounded-xl flex items-center justify-center font-sans text-base shadow-sm ${badgeStyle}">`
+                         + `${count}`
+                         + `</div>`
+                         + `</div>`;
+                }).join('');
+            } else {
+                container.innerHTML = list.map(item => {
+                    const c = stats.counts[item.id] || 0;
+                    const pct = Math.min(Math.round((c / item.limit) * 100), 100);
+                    const col = pct === 100 ? 'bg-amber-400' : 'bg-emerald-400';
+                    const label = currentLang === 'ar' ? item.text : item.id.toUpperCase();
+                    return '<div class="bg-emerald-900/30 border border-emerald-800/30 rounded-2xl p-3 space-y-2">'
+                         + '<div class="flex justify-between items-center">'
+                         + '<span class="text-xs font-bold text-white">' + label + '</span>'
+                         + '<span class="text-sm font-black text-amber-300 font-sans">' + c.toLocaleString() + '</span>'
+                         + '</div>'
+                         + '<div class="h-2 w-full bg-emerald-950 rounded-full overflow-hidden">'
+                         + '<div class="' + col + ' h-full rounded-full transition-all duration-500" style="width:' + pct + '%"></div>'
+                         + '</div>'
+                         + '<div class="flex justify-between text-[10px] text-emerald-400">'
+                         + '<span>' + pct + '% من الإجمالي</span>'
+                         + '<span>x33: ' + Math.floor(c/33) + ' · x100: ' + Math.floor(c/100) + '</span>'
+                         + '</div>'
+                         + '</div>';
+                }).join('');
+            }
         }
 
-        // Dhikr Switching Logic
-        function selectDhikr(dhikrName) {
-            activeDhikr = dhikrName;
-            rebuildDhikrTabs();
-        }
+        // MAIN TAP COUNTER CORE MECHANIC
+        function setupCounterMechanic() {
+            const btn = document.getElementById('tap-zone');
+            if (!btn) return;
 
-        // Synthesize a beautiful zen-like bell sound for the tasbeeh tap (pure CSS + Web Audio)
-        function playChimeSound() {
-            try {
-                const ctx = new (window.AudioContext || window.webkitAudioContext)();
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
+            const handleTap = (e) => {
+                e.preventDefault();
                 
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(587.33, ctx.currentTime); // D5 Note (spiritual/peaceful)
+                // Update numeric models
+                stats.total++;
+                stats.today++;
+                if (!stats.counts[selectedDhikrId]) stats.counts[selectedDhikrId] = 0;
+                stats.counts[selectedDhikrId]++;
                 
-                gain.gain.setValueAtTime(0, ctx.currentTime);
-                gain.gain.linearRampToValueAtTime(0.15, ctx.currentTime + 0.02);
-                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
-                
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-                
-                osc.start();
-                osc.stop(ctx.currentTime + 0.4);
-            } catch (e) {
-                console.log('Web Audio API not supported yet on this client.', e);
-            }
-        }
+                saveStats();
+                renderTabContent();
 
-        // Increment Counter Action
-        function incrementCounter() {
-            const d = dhikrList.find(x => x.ar === activeDhikr);
-            if (!d) return;
-            dhikrCounts[d.key] = (dhikrCounts[d.key] || 0) + 1;
-            saveDhikrCounts();
-
-            // Update daily count
-            let daily = getDailyCount() + 1;
-            localStorage.setItem('alNoor_dailyCount', daily);
-
-            if (soundEnabled) playChimeSound();
-            if (hapticEnabled && navigator.vibrate) navigator.vibrate(40);
-
-            // Pop animation on counter display
-            const dispEl = document.getElementById('main-counter-display');
-            if (dispEl) { dispEl.classList.remove('count-pop'); void dispEl.offsetWidth; dispEl.classList.add('count-pop'); }
-            const btnEl = document.querySelector('.glow-btn');
-            if (btnEl) { btnEl.classList.remove('glow-pulse'); void btnEl.offsetWidth; btnEl.classList.add('glow-pulse'); }
-
-            updateUI();
-        }
-
-        // Custom Confirmation instead of global blocking confirm()
-        function showResetConfirmation() {
-            document.getElementById('reset-confirm-modal').classList.remove('hidden');
-        }
-
-        function closeResetConfirmation() {
-            document.getElementById('reset-confirm-modal').classList.add('hidden');
-        }
-
-        function confirmReset() {
-            const d = dhikrList.find(x => x.ar === activeDhikr);
-            if (d) { dhikrCounts[d.key] = 0; saveDhikrCounts(); }
-            updateUI();
-            closeResetConfirmation();
-            showToast(i18nDict[currentLang].toastReset);
-        }
-
-        // Settings Toggle (Haptics & Sound)
-        function toggleHaptic() {
-            hapticEnabled = !hapticEnabled;
-            const btn = document.getElementById('vibe-toggle-btn');
-            if (hapticEnabled) {
-                btn.classList.add('text-emerald-200', 'bg-emerald-900/30');
-                btn.classList.remove('text-slate-400', 'bg-slate-800/10');
-                showToast(i18nDict[currentLang].toastHapticOn);
-            } else {
-                btn.classList.remove('text-emerald-200', 'bg-emerald-900/30');
-                btn.classList.add('text-slate-400', 'bg-slate-800/10');
-                showToast(i18nDict[currentLang].toastHapticOff);
-            }
-        }
-
-        function toggleAudio() {
-            soundEnabled = !soundEnabled;
-            const btn = document.getElementById('sound-toggle-btn');
-            if (soundEnabled) {
-                btn.classList.add('text-emerald-200', 'bg-emerald-900/30');
-                btn.classList.remove('text-slate-400', 'bg-slate-800/10');
-                showToast(i18nDict[currentLang].toastSoundOn);
-            } else {
-                btn.classList.remove('text-emerald-200', 'bg-emerald-900/30');
-                btn.classList.add('text-slate-400', 'bg-slate-800/10');
-                showToast(i18nDict[currentLang].toastSoundOff);
-            }
-        }
-
-        // Geolocation finder
-        function getUserLocation() {
-            document.getElementById('current-location-text').innerText = i18nDict[currentLang].locFinding;
-            
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                        userLatitude = position.coords.latitude;
-                        userLongitude = position.coords.longitude;
-                        document.getElementById('current-location-text').innerText = i18nDict[currentLang].locActive;
-                        fetchPrayerTimesByCoords(userLatitude, userLongitude);
-                    },
-                    (error) => {
-                        console.log('Location denied or failed, using defaults.', error);
-                        document.getElementById('current-location-text').innerText = i18nDict[currentLang].locDefault;
-                        fetchPrayerTimesByCoords(25.2048, 55.2708); // Dubai default
-                    },
-                    { timeout: 10000 }
-                );
-            } else {
-                fetchPrayerTimesByCoords(25.2048, 55.2708);
-            }
-        }
-
-        // Populate manual selectors based on Active language
-        function populateManualCountries() {
-            const countrySelect = document.getElementById('country-select');
-            const savedValue = countrySelect.value || 'AE';
-            countrySelect.innerHTML = '';
-            
-            const list = (currentLang === 'ar') ? presetCountriesAr : presetCountriesEn;
-            list.forEach(country => {
-                const opt = document.createElement('option');
-                opt.value = country.code;
-                opt.innerText = country.name;
-                countrySelect.appendChild(opt);
-            });
-            
-            countrySelect.value = savedValue;
-            loadPresetCity();
-        }
-
-        function loadPresetCity() {
-            const country = document.getElementById('country-select').value;
-            const citySelect = document.getElementById('city-select');
-            const savedCity = citySelect.value;
-            citySelect.innerHTML = '';
-            
-            presetCities[country].forEach(city => {
-                const opt = document.createElement('option');
-                opt.value = city.name;
-                opt.innerText = (currentLang === 'ar') ? city.ar : city.name;
-                citySelect.appendChild(opt);
-            });
-            
-            selectedCountry = country;
-            if (savedCity && presetCities[country].some(c => c.name === savedCity)) {
-                citySelect.value = savedCity;
-            } else {
-                selectedCity = citySelect.value;
-            }
-        }
-
-        function fetchPrayerTimesManually() {
-            selectedCity = document.getElementById('city-select').value;
-            selectedCountry = document.getElementById('country-select').value;
-            document.getElementById('current-location-text').innerText = `${i18nDict[currentLang].locCustom}: ${selectedCity}`;
-            fetchPrayerTimesByCity(selectedCity, selectedCountry);
-        }
-
-        // Call Aladhan API using lat/lon
-        async function fetchPrayerTimesByCoords(lat, lon) {
-            try {
-                const now2 = new Date(); const dateStr2 = `${now2.getDate()}-${now2.getMonth()+1}-${now2.getFullYear()}`;
-                const url = `https://api.aladhan.com/v1/timings/${dateStr2}?latitude=${lat}&longitude=${lon}&method=4`;
-                const response = await fetch(url);
-                const result = await response.json();
-                if(result.code === 200) {
-                    processTimings(result.data.timings);
+                // Audiovisual feedbacks
+                if (soundEnabled) {
+                    const snd = document.getElementById('click-sound');
+                    if (snd) { snd.currentTime = 0; snd.play().catch(()=>{}); }
                 }
-            } catch (e) {
-                console.error("Failed to load prayer times API", e);
-                showToast(i18nDict[currentLang].errLocation);
-            }
-        }
+                vibrateDevice(15);
 
-        // Call Aladhan API using City/Country
-        async function fetchPrayerTimesByCity(city, country) {
-            try {
-                const url = `https://api.aladhan.com/v1/timingsByCity?city=${encodeURIComponent(city)}&country=${encodeURIComponent(country)}&method=4`;
-                const response = await fetch(url);
-                const result = await response.json();
-                if(result.code === 200) {
-                    processTimings(result.data.timings);
-                }
-            } catch (e) {
-                console.error("Failed to load prayer times API by city", e);
-                showToast(i18nDict[currentLang].errManual);
-            }
-        }
+                // CSS Visual Pops
+                btn.classList.remove('glow-pulse');
+                void btn.offsetWidth; // Reflow
+                btn.classList.add('glow-pulse');
 
-        function processTimings(timings) {
-            prayerTimings = {
-                Fajr: timings.Fajr,
-                Sunrise: timings.Sunrise,
-                Dhuhr: timings.Dhuhr,
-                Asr: timings.Asr,
-                Maghrib: timings.Maghrib,
-                Isha: timings.Isha
+                const counterGridElement = document.getElementById('today-count-display').parentElement;
+                counterGridElement.classList.remove('count-pop');
+                void counterGridElement.offsetWidth;
+                counterGridElement.add('count-pop');
             };
 
-            // Update Prayer Tab UI times
-            for (const key in prayerTimings) {
-                const el = document.getElementById(`time-${key}`);
-                if (el) el.innerText = prayerTimings[key];
-            }
-
-            // Start Countdown engine
-            initCountdownEngine();
-            showToast(i18nDict[currentLang].toastPrayerTimesUpdated);
+            btn.addEventListener('touchstart', handleTap, { passive: false });
+            btn.addEventListener('click', handleTap);
         }
 
-        function requestNotificationPermission() {
-            if (!("Notification" in window)) {
-                showToast(i18nDict[currentLang].toastNotiUnsuited);
-                return;
-            }
-            Notification.requestPermission().then((permission) => {
-                if (permission === "granted") {
-                    showToast(i18nDict[currentLang].toastNotiGranted);
-                    document.getElementById('noti-permission-badge').classList.add('hidden');
-                } else {
-                    showToast(i18nDict[currentLang].toastNotiDenied);
-                }
-            });
+        // LANGUAGES
+        function toggleLanguage() {
+            currentLang = currentLang === 'ar' ? 'en' : 'ar';
+            localStorage.setItem('alNoorLang', currentLang);
+            applyLanguageUI();
+            renderTabContent();
         }
 
-        function togglePrayerNotification(prayerKey) {
-            prayerAlerts[prayerKey] = !prayerAlerts[prayerKey];
-            localStorage.setItem('alNoor_prayerAlerts', JSON.stringify(prayerAlerts));
+        function applyLanguageUI() {
+            const dict = uiText[currentLang];
+            document.getElementById('txt-title').innerText = dict.title;
+            document.getElementById('txt-subtitle').innerText = dict.subtitle;
+            document.getElementById('lbl-today-count').innerText = dict.today;
+            document.getElementById('lbl-total-count').innerText = dict.total;
+            document.getElementById('lbl-next-prayer').innerText = dict.nextPrayer;
+            document.getElementById('btn-tab-dhikr').innerText = dict.tabDhikr;
+            document.getElementById('btn-tab-goals').innerText = dict.tabGoals;
+            document.getElementById('btn-reset-current').innerText = dict.btnReset;
+            updateMainButtonLabel();
             
-            const btn = document.getElementById(`alert-${prayerKey}`);
-            const pName = (currentLang === 'ar') ? prayerNamesAr[prayerKey] : prayerNamesEn[prayerKey];
-            if (prayerAlerts[prayerKey]) {
-                btn.innerHTML = `<i class="fa-solid fa-bell text-amber-400"></i>`;
-                showToast(`${i18nDict[currentLang].toastAlertEnabledFor} ${pName}`);
+            // Adjust body directionality
+            const frame = document.getElementById('app-frame');
+            if(currentLang === 'en') {
+                frame.setAttribute('dir', 'ltr');
+                document.documentElement.setAttribute('lang', 'en');
+                document.documentElement.setAttribute('dir', 'ltr');
             } else {
-                btn.innerHTML = `<i class="fa-regular fa-bell-slash text-emerald-100/30"></i>`;
-                showToast(`${i18nDict[currentLang].toastAlertDisabledFor} ${pName}`);
+                frame.setAttribute('dir', 'rtl');
+                document.documentElement.setAttribute('lang', 'ar');
+                document.documentElement.setAttribute('dir', 'rtl');
             }
         }
 
-        function initCountdownEngine() {
-            if (timerInterval) clearInterval(timerInterval);
+        // RESET LOGIC
+        function resetCurrentDhikr() {
+            stats.counts[selectedDhikrId] = 0;
+            saveStats();
+            renderTabContent();
+            vibrateDevice(60);
+        }
 
-            timerInterval = setInterval(() => {
+        // HAPTICS & SOUND CONTROLS
+        function vibrateDevice(ms) {
+            if (navigator.vibrate) navigator.vibrate(ms);
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            localStorage.setItem('alNoorSound', JSON.stringify(soundEnabled));
+            const icon = document.getElementById('btn-sound').querySelector('i');
+            if (soundEnabled) {
+                icon.className = "fa-solid fa-volume-high text-sm";
+            } else {
+                icon.className = "fa-solid fa-volume-xmark text-sm opacity-50";
+            }
+        }
+
+        // ENGINE PRAYER TIMES CLOCK & COUNTDOWN
+        function startPrayerClock() {
+            const updateClock = () => {
                 const now = new Date();
+                const hrs = now.getHours();
+                const mns = now.getMinutes();
+                const sec = now.getSeconds();
+
+                // Find next prayer matching logic
+                let next = prayerTimes[0];
                 let minDiff = Infinity;
-                let activeNextName = '';
-                let activeNextTimeStr = '';
 
-                // Current formatted local date helper
-                const year = now.getFullYear();
-
-                // Determine next prayer
-                for (const key in prayerTimings) {
-                    if (key === 'Sunrise') continue; // Skip sunrise for next prayer calculations
-
-                    const timeParts = prayerTimings[key].split(':');
-                    const prayerDate = new Date(year, now.getMonth(), now.getDate(), parseInt(timeParts[0]), parseInt(timeParts[1]), 0);
+                prayerTimes.forEach(p => {
+                    const [pHrs, pMns] = p.time.split(':').map(Number);
+                    let diff = (pHrs * 60 + pMns) - (hrs * 60 + mns);
+                    if (diff <= 0) diff += 24 * 60; // loops tomorrow
                     
-                    let diff = prayerDate - now;
-                    
-                    // If the prayer is tomorrow
-                    if (diff < 0) {
-                        diff += 24 * 60 * 60 * 1000;
-                    }
-
                     if (diff < minDiff) {
                         minDiff = diff;
-                        activeNextName = key;
-                        activeNextTimeStr = prayerTimings[key];
+                        next = p;
                     }
-                }
-
-                nextPrayerName = activeNextName;
-                nextPrayerTimeStr = activeNextTimeStr;
-
-                // Format countdown display
-                if (minDiff !== Infinity) {
-                    const hours = Math.floor((minDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                    const minutes = Math.floor((minDiff % (1000 * 60 * 60)) / (1000 * 60));
-                    const seconds = Math.floor((minDiff % (1000 * 60)) / 1000);
-
-                    const pad = (n) => String(n).padStart(2, '0');
-                    const formattedTime = `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
-                    const prayerTransName = (currentLang === 'ar') ? prayerNamesAr[nextPrayerName] : prayerNamesEn[nextPrayerName];
-
-                    // Update UI elements
-                    const nextPrayerLabel = (currentLang === 'ar') ? `صلاة ${prayerTransName}` : `${prayerTransName} Prayer`;
-                    document.getElementById('quick-next-prayer-name').innerText = nextPrayerLabel;
-                    document.getElementById('quick-next-prayer-time').innerText = nextPrayerTimeStr;
-                    document.getElementById('quick-next-prayer-countdown').innerText = `${i18nDict[currentLang].nextPrayerRem} ${formattedTime}`;
-
-                    const heroTitleLabel = (currentLang === 'ar') ? `صلاة ${prayerTransName} في ${nextPrayerTimeStr}` : `${prayerTransName} at ${nextPrayerTimeStr}`;
-                    document.getElementById('prayer-hero-name').innerText = heroTitleLabel;
-                    document.getElementById('prayer-hero-countdown').innerText = formattedTime;
-
-                    // Highlight Active row
-                    document.querySelectorAll('.prayer-row').forEach(row => {
-                        row.classList.remove('bg-amber-500/10', 'border-amber-500/20');
-                    });
-                    const activeRow = document.getElementById(`prayer-item-${nextPrayerName}`);
-                    if (activeRow) {
-                        activeRow.classList.add('bg-amber-500/10', 'border-amber-500/20');
-                    }
-
-                    // TRIGGER: Prayer Alert when time hits 0
-                    if (hours === 0 && minutes === 0 && seconds === 0) {
-                        triggerPrayerNotification(nextPrayerName);
-                    }
-                }
-            }, 1000);
-        }
-
-        // TRIGGER PRAYER ALARM
-        function triggerPrayerNotification(prayerName) {
-            if (!prayerAlerts[prayerName]) return; // Alerts disabled for this prayer
-
-            // Play Spiritual Tone (Procedural Synth code)
-            playAdhanChimeAlert();
-
-            const prayerTransName = (currentLang === 'ar') ? prayerNamesAr[prayerName] : prayerNamesEn[prayerName];
-
-            // Native Browser Notification
-            if (Notification.permission === "granted") {
-                const titleText = (currentLang === 'ar') ? `حان الآن موعد أذان ${prayerTransName}` : `Adhan Time for ${prayerTransName}`;
-                new Notification(titleText, {
-                    body: i18nDict[currentLang].adhanTextBody,
-                    icon: "https://placehold.co/128x128/064e3b/ffffff?text=Adhan"
                 });
-            }
 
-            // Custom Application Alert Modal popup
-            document.getElementById('alert-prayer-name').innerText = (currentLang === 'ar') ? `صلاة ${prayerTransName}` : `${prayerTransName} Prayer`;
-            document.getElementById('prayer-alert-modal').classList.remove('hidden');
-        }
-
-        function playAdhanChimeAlert() {
-            try {
-                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                // Set strings
+                document.getElementById('next-prayer-name').innerText = currentLang === 'ar' ? next.nameAr : next.nameEn;
+                document.getElementById('next-prayer-time').innerText = next.time;
                 
-                // Play a sequence of pure sine wave chords mimicking spiritual wind chimes
-                const chord = [329.63, 392.00, 523.25, 659.25]; // E4, G4, C5, E5
-                chord.forEach((freq, index) => {
-                    const osc = ctx.createOscillator();
-                    const gain = ctx.createGain();
-                    
-                    osc.frequency.setValueAtTime(freq, ctx.currentTime);
-                    gain.gain.setValueAtTime(0, ctx.currentTime);
-                    gain.gain.linearRampToValueAtTime(0.2, ctx.currentTime + index * 0.3 + 0.05);
-                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + index * 0.3 + 1.5);
-                    
-                    osc.connect(gain);
-                    gain.connect(ctx.destination);
-                    
-                    osc.start(ctx.currentTime + index * 0.2);
-                    osc.stop(ctx.currentTime + index * 0.2 + 1.6);
-                });
-            } catch (e) {
-                console.log(e);
-            }
-        }
+                // Format countdown display strings
+                const [pHrs, pMns] = next.time.split(':').map(Number);
+                let totalSecNow = (hrs * 3600) + (mns * 60) + sec;
+                let totalSecTarget = (pHrs * 3600) + (pMns * 60);
+                if (totalSecTarget <= totalSecNow) totalSecTarget += 24 * 3600;
 
-        function dismissPrayerAlert() {
-            document.getElementById('prayer-alert-modal').classList.add('hidden');
-        }
+                let diffSec = totalSecTarget - totalSecNow;
+                let rHrs = Math.floor(diffSec / 3600);
+                let rMns = Math.floor((diffSec % 3600) / 60);
+                let rSec = diffSec % 60;
 
-        // Dynamic Random Dua Logic
-        function generateRandomDua() {
-            const randomIndex = Math.floor(Math.random() * deceasedDuas.length);
-            const currentDua = deceasedDuas[randomIndex];
-            
-            const duaTextEl = document.getElementById('dua-text');
-            const duaRefEl = document.getElementById('dua-reference');
-            
-            // Fade out, change, fade back in
-            duaTextEl.style.opacity = '0';
-            setTimeout(() => {
-                if (currentLang === 'ar') {
-                    duaTextEl.innerText = `"${currentDua.textAr}"`;
-                    duaRefEl.innerText = `— ${currentDua.refAr}`;
-                } else {
-                    duaTextEl.innerText = `"${currentDua.textEn}"`;
-                    duaRefEl.innerText = `— ${currentDua.refEn}`;
-                }
-                duaTextEl.style.opacity = '1';
-            }, 200);
-        }
-
-        // Update All UI Elements
-        function updateUI() {
-            const activeCount = getActiveCount();
-            const total       = getTotalCount();
-            const daily       = getDailyCount();
-
-            // ── Dashboard ──
-            document.getElementById('home-daily-count').innerText = daily.toLocaleString();
-            document.getElementById('home-total-count').innerText = total.toLocaleString();
-
-            // ── Main counter display (shows active dhikr count) ──
-            document.getElementById('main-counter-display').innerText = activeCount.toLocaleString();
-
-            // ── Counter ring (goal = 33, loops) ──
-            const ringEl = document.getElementById('counter-ring');
-            if (ringEl) {
-                const progress = activeCount === 0 ? 0 : ((activeCount - 1) % 33 + 1) / 33;
-                ringEl.style.strokeDashoffset = 628 - progress * 628;
-            }
-
-            // ── Milestone label ──
-            const ms = document.getElementById('counter-milestone');
-            if (ms) {
-                const k33  = Math.floor(activeCount / 33);
-                const k100 = Math.floor(activeCount / 100);
-                if (activeCount === 0)    ms.innerText = '';
-                else if (k100 > 0) ms.innerText = k100 + ' ختمة مئوية · ' + k33 + ' ختمة فردية';
-                else if (k33  > 0) ms.innerText = k33  + ' ختمة فردية · ' + (activeCount % 33) + ' / 33';
-                else               ms.innerText = activeCount + ' / 33';
-            }
-
-            // ── Nav badge ──
-            const badge = document.getElementById('nav-count-badge');
-            if (total > 0) {
-                badge.classList.remove('hidden');
-                badge.innerText = total > 999 ? '999+' : total;
-            } else badge.classList.add('hidden');
-
-            // ── Home ring (goal = 100) ──
-            const pct = Math.min(Math.round((activeCount / 100) * 100), 100);
-            document.getElementById('goal-percentage').innerText = pct + '%';
-            const offset = 213.6 - (pct / 100) * 213.6;
-            document.getElementById('goal-progress-circle').setAttribute('stroke-dashoffset', offset);
-
-            // ── Stats page ──
-            document.getElementById('stats-daily').innerText = daily.toLocaleString();
-            document.getElementById('stats-total').innerText = total.toLocaleString();
-            renderDhikrStatsTable();
-
-            // ── Progress bars (based on active dhikr) ──
-            updateProgressBar('33',   33);
-            updateProgressBar('100',  100);
-            updateProgressBar('1000', 1000);
-
-            // ── Bell toggles ──
-            for (const key in prayerAlerts) {
-                const btn = document.getElementById('alert-' + key);
-                if (btn) {
-                    btn.innerHTML = prayerAlerts[key]
-                        ? '<i class="fa-solid fa-bell text-amber-400"></i>'
-                        : '<i class="fa-regular fa-bell-slash text-emerald-100/30"></i>';
-                }
-            }
-        }
-
-
-        // ── EDIT DECEASED NAME ──────────────────────────────
-        function editDeceasedName() {
-            const currentName = localStorage.getItem('alNoor_deceasedName') || (currentLang === 'ar' ? 'جدي' : 'Dearest Uncle');
-            const prompt_text = currentLang === 'ar' ? 'أدخل اسم المرحوم:' : 'Enter the name of the deceased:';
-            const newName = window.prompt(prompt_text, currentName);
-            if (newName !== null && newName.trim() !== '') {
-                const cleaned = newName.trim();
-                localStorage.setItem('alNoor_deceasedName', cleaned);
-                i18nDict.ar.headerUncle = cleaned;
-                i18nDict.en.headerUncle = cleaned;
-                document.getElementById('i18n-header-uncle').innerText = cleaned;
-                showToast(currentLang === 'ar' ? '✅ تم تحديث الاسم' : '✅ Name updated');
-            }
-        }
-
-
-        // ── PER-DHIKR STATS TABLE ────────────────────────────
-        function renderDhikrStatsTable() {
-            const container = document.getElementById('dhikr-stats-container');
-            if (!container) return;
-            const total = getTotalCount() || 1;
-            const barColors = {
-                subhanallah: 'bg-emerald-500', alhamdulillah: 'bg-amber-500',
-                allahuakbar: 'bg-indigo-500',  lailaha: 'bg-rose-500',
-                astaghfirullah: 'bg-sky-500',  salawat: 'bg-purple-500'
+                const pad = num => String(num).padStart(2, '0');
+                const labelPrefix = currentLang === 'ar' ? 'متبقي ' : 'Left ';
+                document.getElementById('prayer-countdown').innerText = `${labelPrefix}${pad(rHrs)}:${pad(rMns)}:${pad(rSec)}`;
+                
+                // Icon injector
+                document.getElementById('prayer-icon').className = `fa-solid ${next.icon} text-lg`;
             };
-            container.innerHTML = dhikrList.map(function(d) {
-                const c = dhikrCounts[d.key] || 0;
-                const pct = Math.min((c / total) * 100, 100).toFixed(1);
-                const col = barColors[d.key] || 'bg-emerald-500';
-                const label = currentLang === 'ar' ? d.ar : d.en;
-                return '<div class="bg-emerald-900/30 border border-emerald-800/30 rounded-2xl p-3 space-y-2">'
-                     + '<div class="flex justify-between items-center">'
-                     + '<span class="text-xs font-bold text-white">' + label + '</span>'
-                     + '<span class="text-sm font-black text-amber-300 font-sans">' + c.toLocaleString() + '</span>'
-                     + '</div>'
-                     + '<div class="h-2 w-full bg-emerald-950 rounded-full overflow-hidden">'
-                     + '<div class="' + col + ' h-full rounded-full transition-all duration-500" style="width:' + pct + '%"></div>'
-                     + '</div>'
-                     + '<div class="flex justify-between text-[10px] text-emerald-400">'
-                     + '<span>' + pct + '% من الإجمالي</span>'
-                     + '<span>x33: ' + Math.floor(c/33) + ' · x100: ' + Math.floor(c/100) + '</span>'
-                     + '</div>'
-                     + '</div>';
-            }).join('');
-        }
 
-        function updateProgressBar(id, limit) {
-            const bar  = document.getElementById('progress-bar-' + id);
-            const text = document.getElementById('progress-text-' + id);
-            if (!bar || !text) return;
-            const count = getActiveCount();
-            bar.style.width = Math.min((count / limit) * 100, 100) + '%';
-            text.innerText = count.toLocaleString() + '/' + limit;
+            updateClock();
+            setInterval(updateClock, 1000);
         }
     </script>
 </body>
