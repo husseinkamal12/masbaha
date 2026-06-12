@@ -42,9 +42,9 @@
     <style>
         body {
             font-family: 'Cairo', 'Plus Jakarta Sans', sans-serif;
-            background-color: #0b1311;
+            background-color: #011c15; /* يجعل الخلفية الخارجية بلون تطبيقك الزيتي الفخم */
         }
-        /* Custom scrollbar to keep it sleek */
+        /* سكرول بار متناسق */
         ::-webkit-scrollbar {
             width: 4px;
         }
@@ -55,7 +55,7 @@
             background: #047857;
             border-radius: 10px;
         }
-        /* Glow Effect for Counter Button */
+        /* تأثيرات الضغط والتوهج الخاصة بك */
         .glow-btn:active {
             transform: scale(0.96);
             box-shadow: 0 0 25px rgba(212, 175, 55, 0.5);
@@ -67,11 +67,9 @@
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
-        /* smooth transitions */
         .page-transition {
             transition: all 0.3s ease-in-out;
         }
-        /* Counter tap animation */
         @keyframes countPop {
             0%   { transform: scale(1); }
             30%  { transform: scale(0.93); }
@@ -79,7 +77,6 @@
             100% { transform: scale(1); }
         }
         .count-pop { animation: countPop 0.25s ease; }
-        /* Glow pulse on tap */
         @keyframes glowPulse {
             0%   { box-shadow: 0 0 40px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.04); }
             50%  { box-shadow: 0 0 60px rgba(212,175,55,0.25), 0 0 20px rgba(52,211,153,0.15), inset 0 1px 0 rgba(255,255,255,0.04); }
